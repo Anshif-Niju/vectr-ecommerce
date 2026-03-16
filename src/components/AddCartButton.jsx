@@ -1,4 +1,5 @@
 import { useCart } from '../context/CartContext';
+import { cartBtnStyles } from './Tailwind/tailwind';
 
 function AddCart({ product, qty }) {
   const { addProduct } = useCart();
@@ -8,10 +9,7 @@ function AddCart({ product, qty }) {
   };
 
   return (
-    <button
-      onClick={addProductCart}
-      className="flex-1 bg-[#457b9d] text-white py-2.5 rounded-xl font-bold hover:bg-[#36607a] hover:shadow-lg hover:shadow-blue-900/20 transition-all duration-300 text-sm"
-    >
+    <button onClick={addProductCart} className={cartBtnStyles.button}>
       Add to Cart
     </button>
   );

@@ -95,15 +95,15 @@ export const CartProvider = ({ children }) => {
   const cartLength = cart.length;
 
   const totalPrice = useMemo(() => {
-    cart.reduce((total, item) => {
+    return cart.reduce((total, item) => {
       return total + item.product.price * item.size;
     }, 0);
   }, [cart]);
 
-  const delivery = useMemo(() => {
-    cart.length == 0 ? 0 : totalPrice > 100000 ? 0 : 199;
-  }, [cart.length, totalPrice]);
-
+  const delivery = useMemo(
+    () => (cart.length === 0 ? 0 : totalPrice > 100000 ? 0 : 199),
+    [cart.length, totalPrice],
+  );
   return (
     <CartContext.Provider
       value={{

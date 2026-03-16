@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { cartCardStyles } from './Tailwind/tailwind';
 
 function CartCard({ id, item, size }) {
   const [msg, setMsg] = useState('');
@@ -11,71 +12,59 @@ function CartCard({ id, item, size }) {
 
   function changeProductSize(amount) {
     if (amount == -1 && size <= 1) {
-        setMsg('Minimum Reached');
-        return;
+      setMsg('Minimum Reached');
+      return;
     }
-    
-    setMsg("")
+
+    setMsg('');
     addProduct(item, amount);
   }
 
   return (
-    <div className="lg:col-span-2 space-y-6">
-      <div className="flex gap-6 bg-white border border-slate-200 p-4 rounded-[2rem] shadow-sm hover:shadow-md transition-shadow">
+    <div className={cartCardStyles.wrapper}>
+      <div className={cartCardStyles.cardContainer}>
         <img
           src={item.img}
-          className="w-32 h-32 rounded-3xl object-cover bg-slate-100"
+          className={cartCardStyles.image}
           loading="lazy"
+          alt={item.name}
         />
 
-        <div className="flex-1 flex flex-col justify-center">
-          <h2 className="text-xl font-bold text-[#1D3557]">{item.name}</h2>
-          <p className="text-slate-500 text-sm font-medium mt-1">
-            {item.smallDes}
-          </p>
+        <div className={cartCardStyles.contentArea}>
+          <h2 className={cartCardStyles.title}>{item.name}</h2>
+          <p className={cartCardStyles.description}>{item.smallDes}</p>
 
-          <div className="flex items-center gap-6 mt-4">
-            <span className="text-[#457b9d] font-black text-xl">
-              {item.price}
-            </span>
+          <div className={cartCardStyles.actionRow}>
+            <span className={cartCardStyles.priceText}>{item.price}</span>
 
-            <div className="flex items-center gap-3 bg-slate-50 px-2 py-1 rounded-xl border border-slate-100">
+            <div className={cartCardStyles.qtyControl}>
               <button
-                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white hover:shadow-sm text-[#1D3557] font-bold transition-all"
-                onClick={() => {
-                  changeProductSize(-1);
-                }}
+                className={cartCardStyles.qtyBtn}
+                onClick={() => changeProductSize(-1)}
               >
                 -
               </button>
-              <span className="font-bold text-[#1D3557] min-w-[20px] text-center">
-                {size}
-              </span>
+
+              <span className={cartCardStyles.qtyValue}>{size}</span>
+
               <button
-                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white hover:shadow-sm text-[#1D3557] font-bold transition-all"
-                onClick={() => {
-                  changeProductSize(1);
-                }}
+                className={cartCardStyles.qtyBtn}
+                onClick={() => changeProductSize(1)}
               >
                 +
               </button>
-              {msg && (
-                <p className="text-xs font-bold text-red-500 bg-red-50 px-2 py-1 rounded ml-auto">
-                  {msg}
-                </p>
-              )}
+
+              {msg && <p className={cartCardStyles.errorMsg}>{msg}</p>}
             </div>
           </div>
         </div>
-        <button
-          onClick={removeCartButton}
-          className="self-start text-slate-300 hover:text-red-500 p-2 transition-colors"
-        >
+
+        <button onClick={removeCartButton} className={cartCardStyles.removeBtn}>
           ✕
         </button>
       </div>
 
-      <div className="h-px bg-slate-200 my-4"></div>
+      <div className={cartCardStyles.divider}></div>
     </div>
   );
 }

@@ -6,8 +6,8 @@
       "email": "user@gmail.com",
       "img": "",
       "password": "1234",
-      "isActive": false,
-      "lastActive": "Mon Feb 09 2026",
+      "isActive": true,
+      "lastActive": "Mon Mar 16 2026",
       "role": "user"
     },
     {
@@ -25,7 +25,7 @@
       "email": "admin@gmail.com",
       "password": "1234",
       "isActive": true,
-      "lastActive": "Tue Feb 10 2026",
+      "lastActive": "Sat Feb 14 2026",
       "role": "admin"
     },
     {
@@ -43,7 +43,7 @@
       "email": "user1@gmail.com",
       "password": "1234",
       "isActive": true,
-      "lastActive": "2026-02-02",
+      "lastActive": "Sat Feb 14 2026",
       "role": "user"
     },
     {
@@ -411,6 +411,38 @@
         "category": "dell"
       },
       "size": 5
+    },
+    {
+      "id": "aa14",
+      "userId": "9eb7",
+      "product": {
+        "id": "1",
+        "name": "Dell",
+        "img": "/src/assets/product/Acer.png",
+        "price": 57990,
+        "rent": 1000,
+        "description": " This Acer Nitro Lite 16 gaming laptop is designed to deliver a robust performance for gaming enthusiasts and casual gamers alike. Featuring a 40.60 cm (16) WUXGA IPS display, it offers vibrant colours and the 165 Hz refresh rate delivers fluid motion. Powered by an Intel Core i5-13420H processor and NVIDIA GeForce RTX 3050 GPU, this laptop allows you to have smooth and intense gaming sessions. With a versatile connectivity option, it facilitates easy connection to peripherals and networks.",
+        "smallDes": " The Acer Nitro is a powerful...",
+        "category": "acer",
+        "isActive": true
+      },
+      "size": 11
+    },
+    {
+      "id": "aef8",
+      "userId": "9eb7",
+      "product": {
+        "id": "2",
+        "name": "DELL Alienware ",
+        "img": "/src/assets/product/Dell.png",
+        "price": 249990,
+        "rent": 800,
+        "description": "Get a laptop that can handle several tasks well and knows your demands. The Dell Alienware laptop offers amazing performance across all of your favourite games and programmes thanks to its integrated 14-core 12th Gen Intel Core CPU. Additionally, NVIDIA GeForce RTX graphics, which feature NVIDIA Ray Tracing, NVIDIA Max-Q, and NVIDIA Dynamic Learning Super Sampling (DLSS) technology, let you push performance to its maximum limit. Enjoy lightning-fast gaming with ease thanks to the high-speed capabilities of Killer Wi-Fi 6 and USB 3.2 Gen 2 Type-C, which delivers data at up to 40 Gbps. Moreover, Dolby Vision takes advantage of information that studios and developers provide to deliver greater colour palettes and breathtaking visual effects. The scalable sound system provided by Dolby Atmos, on the other hand, provides each voice and instrument with its own space, allowing you to experience a game exactly as its creators intended.",
+        "smallDes": " The DELL Alienware  is a good...",
+        "category": "dell",
+        "isActive": true
+      },
+      "size": 11
     }
   ],
   "Bookings": [

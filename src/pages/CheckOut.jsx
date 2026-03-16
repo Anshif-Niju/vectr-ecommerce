@@ -7,6 +7,7 @@ import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
 import { toast } from 'react-hot-toast';
 import api from '../service/api';
+import { checkoutStyles } from './Tailwind/Tailwind';
 
 function Checkout() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function Checkout() {
     address: '',
   });
   const [payment, setPayment] = useState(null);
-  const { cart,setCart, totalPrice,clearCart } = useCart();
+  const { cart, totalPrice, clearCart } = useCart();
   const { user } = useUser();
 
   const handleChange = (e) => {
@@ -30,7 +31,7 @@ function Checkout() {
 
   const placeOrder = async () => {
     const emptyField = Object.values(formData).some(
-      (value) => value.trim() == '',
+      (value) => value.trim() === '',
     );
 
     if (emptyField) {
@@ -41,7 +42,7 @@ function Checkout() {
       toast.error('Select payment Option');
       return;
     }
-    if (cart.length == 0) {
+    if (cart.length === 0) {
       toast.error('Cart is empty');
       return;
     }
@@ -53,7 +54,7 @@ function Checkout() {
         img: item.product.img,
         size: item.size,
       }));
-      const res = await api.post('/Bookings', {
+      await api.post('/Bookings', {
         userId: user.id,
         orderDate: new Date().toDateString(),
         product: addCart,
@@ -62,9 +63,8 @@ function Checkout() {
         status: 'Delivery Soon',
       });
 
-      toast.success('Order Placed Succesfully');
-      // setCart([])
-      clearCart()
+      toast.success('Order Placed Successfully');
+      clearCart();
       navigate('/myorders');
     } catch (error) {
       console.log(error);
@@ -76,58 +76,52 @@ function Checkout() {
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-[#F1FAEE] px-6 pt-32 pb-24">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-black text-[#1D3557]">
-            Checkout
-          </h1>
-          <div className="w-24 h-1.5 bg-[#1D3557]/10 mx-auto mt-6 rounded-full"></div>
+      <div className={checkoutStyles.container}>
+        <div className={checkoutStyles.headerWrapper}>
+          <h1 className={checkoutStyles.title}>Checkout</h1>
+          <div className={checkoutStyles.titleUnderline}></div>
         </div>
 
         <CheckoutCard />
 
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-10">
-          <div className="lg:col-span-2 bg-white p-8 rounded-2xl shadow-lg">
-            <form action="">
-              <h2 className="text-2xl font-bold text-[#1D3557] mb-6">
-                Shipping Details
-              </h2>
+        <div className={checkoutStyles.mainGrid}>
+          {/* SHIPPING FORM */}
+          <div className={checkoutStyles.formWrapper}>
+            <form onSubmit={(e) => e.preventDefault()}>
+              <h2 className={checkoutStyles.sectionTitle}>Shipping Details</h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className={checkoutStyles.inputGrid}>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="Full Name"
-                  className="border px-4 py-3 rounded-lg w-full"
+                  className={checkoutStyles.inputField}
                 />
-
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Email Address"
-                  className="border px-4 py-3 rounded-lg w-full"
+                  className={checkoutStyles.inputField}
                 />
-
                 <input
                   type="text"
                   name="number"
                   value={formData.number}
                   onChange={handleChange}
                   placeholder="Phone Number"
-                  className="border px-4 py-3 rounded-lg w-full"
+                  className={checkoutStyles.inputField}
                 />
-
                 <input
                   type="text"
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
                   placeholder="City"
-                  className="border px-4 py-3 rounded-lg w-full"
+                  className={checkoutStyles.inputField}
                 />
               </div>
 
@@ -136,102 +130,92 @@ function Checkout() {
                 value={formData.address}
                 onChange={handleChange}
                 placeholder="Full Address"
-                className="border px-4 py-3 rounded-lg w-full mt-6"
+                className={checkoutStyles.textField}
                 rows="4"
               ></textarea>
             </form>
           </div>
 
-          <div className="bg-white rounded-2xl w-full">
-            <h2 className="text-2xl mt-3 text-center font-bold text-[#1D3557] mb-6">
-              Payment Method
-            </h2>
+          {/* PAYMENT METHOD */}
+          <div className={checkoutStyles.paymentWrapper}>
+            <h2 className={checkoutStyles.paymentTitle}>Payment Method</h2>
 
-            <div className="space-y-4">
-              {/* Cash on Delivery */}
-              <label className="flex items-center justify-between border p-5 rounded-xl cursor-pointer hover:border-[#457B9D] transition">
-                <div className="flex items-center gap-4">
+            <div className={checkoutStyles.paymentList}>
+              {/* COD */}
+              <label className={checkoutStyles.paymentLabel}>
+                <div className={checkoutStyles.paymentTextWrapper}>
                   <input
                     type="radio"
-                    onClick={() => {
-                      setPayment('COD');
-                    }}
                     name="payment"
-                    className="w-5 h-5 accent-[#1D3557]"
+                    onChange={() => setPayment('COD')}
+                    className={checkoutStyles.paymentRadio}
                   />
                   <div>
-                    <p className="font-semibold text-[#1D3557]">
+                    <p className={checkoutStyles.paymentMainText}>
                       Cash on Delivery
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className={checkoutStyles.paymentSubText}>
                       Pay when product arrives
                     </p>
                   </div>
                 </div>
-                <span className="text-sm text-gray-400">COD</span>
+                <span className={checkoutStyles.paymentBadge}>COD</span>
               </label>
 
-              {/* CARD PAYMENT */}
-              <div>
-                <label className="flex items-center justify-between border p-5 rounded-xl cursor-pointer hover:border-[#457B9D] transition">
-                  <div className="flex items-center gap-4">
-                    <input
-                      type="radio"
-                      onClick={() => setPayment('CARD')}
-                      name="payment"
-                      className="peer/card w-5 h-5 accent-[#1D3557]"
-                    />
-                    <div>
-                      <p className="font-semibold text-[#1D3557]">
-                        Credit / Debit Card
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Visa, MasterCard, RuPay
-                      </p>
-                    </div>
+              {/* CARD */}
+              <label className={checkoutStyles.paymentLabel}>
+                <div className={checkoutStyles.paymentTextWrapper}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    onChange={() => setPayment('CARD')}
+                    className={checkoutStyles.paymentRadio}
+                  />
+                  <div>
+                    <p className={checkoutStyles.paymentMainText}>
+                      Credit / Debit Card
+                    </p>
+                    <p className={checkoutStyles.paymentSubText}>
+                      Visa, MasterCard, RuPay
+                    </p>
                   </div>
-                  <span className="text-sm text-gray-400">CARD</span>
-                </label>
-              </div>
+                </div>
+                <span className={checkoutStyles.paymentBadge}>CARD</span>
+              </label>
 
-              {/* UPI PAYMENT */}
-              <div>
-                <label className="flex items-center justify-between border p-5 rounded-xl cursor-pointer hover:border-[#457B9D] transition">
-                  <div className="flex items-center gap-4">
-                    <input
-                      type="radio"
-                      onClick={() => setPayment('UPI')}
-                      name="payment"
-                      className="peer/upi w-5 h-5 accent-[#1D3557]"
-                    />
-                    <div>
-                      <p className="font-semibold text-[#1D3557]">
-                        UPI Payment
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Google Pay, PhonePe, Paytm
-                      </p>
-                    </div>
+              {/* UPI */}
+              <label className={checkoutStyles.paymentLabel}>
+                <div className={checkoutStyles.paymentTextWrapper}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    onChange={() => setPayment('UPI')}
+                    className={checkoutStyles.paymentRadio}
+                  />
+                  <div>
+                    <p className={checkoutStyles.paymentMainText}>
+                      UPI Payment
+                    </p>
+                    <p className={checkoutStyles.paymentSubText}>
+                      GPay, PhonePe, Paytm
+                    </p>
                   </div>
-                  <span className="text-sm text-gray-400">UPI</span>
-                </label>
-              </div>
+                </div>
+                <span className={checkoutStyles.paymentBadge}>UPI</span>
+              </label>
             </div>
           </div>
 
-          <div className="lg:col-span-3  bg-white p-8 rounded-2xl shadow-lg">
-            <h2 className="text-2xl font-bold text-[#1D3557] mb-6">
-              Order Summary
-            </h2>
-
-            <div className="border-t pt-4 mt-4 flex justify-between font-bold text-lg">
+          {/* ORDER SUMMARY */}
+          <div className={checkoutStyles.summaryWrapper}>
+            <h2 className={checkoutStyles.sectionTitle}>Order Summary</h2>
+            <div className={checkoutStyles.totalRow}>
               <p>Total</p>
-              <p className="text-[#457b9d]">{totalPrice}</p>
+              <p className={checkoutStyles.totalPrice}>{totalPrice}</p>
             </div>
-
             <button
               onClick={placeOrder}
-              className="w-full mt-6 bg-[#1D3557] hover:bg-[#457b9d] text-white py-3 rounded-xl font-bold transition"
+              className={checkoutStyles.placeOrderBtn}
             >
               Place Order
             </button>

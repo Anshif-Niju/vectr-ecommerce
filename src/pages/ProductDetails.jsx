@@ -5,6 +5,7 @@ import WishlistButton from '../components/WishlistButton';
 import AddCart from '../components/AddCartButton';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { productStyles } from './Tailwind/Tailwind';
 
 function ProductDetails() {
   const navigate = useNavigate();
@@ -19,9 +20,6 @@ function ProductDetails() {
     const fetchSingleItem = async () => {
       try {
         const res = await api.get(`products/${id}`);
-        if (res.data.length == 0) {
-          setMsg('Not user found');
-        }
         setProduct(res.data);
       } catch (error) {
         console.log(error);
@@ -41,9 +39,7 @@ function ProductDetails() {
         </div>
         <button
           className="mt-6 text-[#457b9d] font-bold hover:underline"
-          onClick={() => {
-            navigate('/shop');
-          }}
+          onClick={() => navigate('/shop')}
         >
           ← Go back to Shop
         </button>
@@ -68,89 +64,66 @@ function ProductDetails() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-[#F1FAEE] text-slate-800 p-6 pt-24 relative overflow-x-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#457b9d]/5 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/3"></div>
+      <div className={productStyles.container}>
+        <div className={productStyles.blurEffect}></div>
 
-        <div className="max-w-6xl mx-auto flex justify-between mb-8 relative z-10">
+        <div className={productStyles.navWrapper}>
           <button
-            onClick={() => {
-              navigate('/shop');
-            }}
-            className="text-[#457b9d] font-bold hover:text-[#1D3557] transition-colors flex items-center gap-2"
+            onClick={() => navigate('/shop')}
+            className={productStyles.navBtn}
           >
             <span>←</span> Back to Shop
           </button>
           <button
-            onClick={() => {
-              navigate('/home');
-            }}
-            className="text-[#457b9d] font-bold hover:text-[#1D3557] transition-colors flex items-center gap-2"
+            onClick={() => navigate('/home')}
+            className={productStyles.navBtn}
           >
             Back to Home <span>→</span>
           </button>
         </div>
 
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-          <div className="bg-white p-4 rounded-[2.5rem] shadow-xl shadow-blue-900/5 border border-slate-100 relative group">
-            <div className="absolute inset-0 bg-[#457b9d]/5 rounded-[2.5rem] transform rotate-1 group-hover:rotate-2 transition-transform -z-10"></div>
+        <div className={productStyles.mainGrid}>
+          {/* IMAGE SIDE */}
+          <div className={productStyles.imgContainer}>
+            <div className={productStyles.imgDecoration}></div>
             <img
               loading="lazy"
               src={product.img}
               alt={product.name}
-              className="w-full h-[400px] md:h-[500px] object-cover rounded-[2rem]"
+              className={productStyles.mainImg}
             />
           </div>
 
+          {/* CONTENT SIDE */}
           <div className="space-y-8">
             <div>
-              <span className="inline-block px-3 py-1 bg-[#457b9d]/10 text-[#457b9d] text-xs font-bold uppercase tracking-wider rounded-full mb-3">
+              <span className={productStyles.badge}>
                 {product.category || 'Electronics'}
               </span>
-              <h1 className="text-4xl md:text-5xl font-black text-[#1D3557] tracking-tight leading-tight">
-                {product.name}
-              </h1>
+              <h1 className={productStyles.title}>{product.name}</h1>
             </div>
 
-            <p className="text-slate-500 text-lg leading-relaxed font-medium">
-              {product.description}
-            </p>
-
-            <h2 className="text-4xl font-black text-[#457b9d]">
-              {product.price}
-            </h2>
+            <p className={productStyles.description}>{product.description}</p>
+            <h2 className={productStyles.price}>{product.price}</h2>
 
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold text-[#1D3557] uppercase tracking-wide">
-                Quantity
-              </label>
-              <div className="flex items-center gap-4 bg-white border border-slate-200 w-fit p-2 rounded-xl shadow-sm">
+              <label className={productStyles.qtyLabel}>Quantity</label>
+              <div className={productStyles.qtyControlWrapper}>
                 <button
-                  className="w-10 h-10 rounded-lg bg-slate-100 text-[#1D3557] text-xl font-bold hover:bg-[#1D3557] hover:text-white transition-colors"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (qty == 1) {
-                      setMsg('Minimum size reached');
-                      return;
-                    }
+                  className={productStyles.qtyBtn}
+                  onClick={() => {
+                    if (qty === 1) return setMsg('Minimum size reached');
                     setMsg('');
                     setQty((prev) => prev - 1);
                   }}
                 >
                   -
                 </button>
-
-                <span className="text-xl font-bold text-[#1D3557] min-w-[30px] text-center">
-                  {qty}
-                </span>
-
+                <span className={productStyles.qtyValue}>{qty}</span>
                 <button
-                  className="w-10 h-10 rounded-lg bg-slate-100 text-[#1D3557] text-xl font-bold hover:bg-[#457b9d] hover:text-white transition-colors"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (qty == 10) {
-                      setMsg('Maximum size reached');
-                      return;
-                    }
+                  className={productStyles.qtyBtnPlus}
+                  onClick={() => {
+                    if (qty === 10) return setMsg('Maximum size reached');
                     setMsg('');
                     setQty((prev) => prev + 1);
                   }}
@@ -159,20 +132,16 @@ function ProductDetails() {
                 </button>
                 <WishlistButton product={product} />
               </div>
-              {msg && (
-                <p className="text-red-500 text-sm font-bold bg-red-50 w-fit px-2 py-1 rounded">
-                  {msg}
-                </p>
-              )}
+              {msg && <p className={productStyles.errorMsg}>{msg}</p>}
             </div>
 
             <div className="flex flex-wrap gap-4 pt-4 border-t border-slate-200">
               <AddCart product={product} qty={qty} />
-              
             </div>
 
-            <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm mt-8">
-              <h3 className="text-lg font-bold text-[#1D3557] mb-4 flex items-center gap-2">
+            {/* SPECIFICATIONS */}
+            <div className={productStyles.specsCard}>
+              <h3 className={productStyles.specsTitle}>
                 <svg
                   className="w-5 h-5 text-[#457b9d]"
                   fill="none"
@@ -188,33 +157,31 @@ function ProductDetails() {
                 </svg>
                 Specifications
               </h3>
-              <ul className="text-slate-600 space-y-2 font-medium">
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#457b9d]"></span>
-                  Processor:  Intel i7
+              <ul className={productStyles.specsList}>
+                <li className={productStyles.specsItem}>
+                  <span className={productStyles.bullet}></span> Processor:
+                  Intel i7
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#457b9d]"></span>
-                  RAM: 16GB
+                <li className={productStyles.specsItem}>
+                  <span className={productStyles.bullet}></span> RAM: 16GB
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#457b9d]"></span>
-                  Storage: 512GB SSD
+                <li className={productStyles.specsItem}>
+                  <span className={productStyles.bullet}></span> Storage: 512GB
+                  SSD
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#457b9d]"></span>
-                  Display: 13.6″ Retina
+                <li className={productStyles.specsItem}>
+                  <span className={productStyles.bullet}></span> Display: 13.6″
+                  Retina
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#457b9d]"></span>
-                  Battery: Up to 18 hours
+                <li className={productStyles.specsItem}>
+                  <span className={productStyles.bullet}></span> Battery: Up to
+                  18 hours
                 </li>
               </ul>
             </div>
           </div>
         </div>
       </div>
-
       <Footer />
     </>
   );
