@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import api from '../service/api';
 
 const useFetch = (url) => {
@@ -6,22 +6,33 @@ const useFetch = (url) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await api.get(url);
-        setData(res.data);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // 🔥 reusable fetch function
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
 
-    fetchData();
+      const res = await api.get(url);
+      setData(res.data);
+
+    } catch (error) {
+      // ✅ better error message
+      setError(error.response?.data?.message || "Something went wrong");
+
+      // 🔐 optional: auto logout if token invalid
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+      }
+
+    } finally {
+      setLoading(false);
+    }
   }, [url]);
 
-  return { data, loading, error };
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch: fetchData };
 };
 
 export { useFetch };

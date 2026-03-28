@@ -1,13 +1,55 @@
-import {useState,useEffect} from 'react'
-import { Link } from 'react-router-dom';
-import { useLogin } from '../hook/useLogin';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import api from '../../service/api';
 
 function AdminLogin() {
-  // const { formData, handleChange, handleSubmit, error } = useLogin();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: '',
+    pass: '',
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
+    try {
+      const res = await api.post('/users/login', {
+        email: formData.email,
+        password: formData.pass,
+      });
 
+      localStorage.setItem('token', res.data.jwt_token);
+
+      // Check if user is admin
+      const userRes = await api.get('/users/me');
+      if (userRes.data.role !== 'admin') {
+        throw new Error('Access denied. Admin only.');
+      }
+
+      toast.success('Admin login successful!');
+      navigate('/admin/dashboard');
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Login failed';
+      setError(errorMessage);
+      toast.error(errorMessage);
+      localStorage.removeItem('token');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F1FAEE] px-4 relative overflow-hidden">
@@ -36,6 +78,7 @@ function AdminLogin() {
               value={formData.email}
               onChange={handleChange}
               className="w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 text-[#1D3557] font-bold placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#457b9d] focus:border-transparent transition-all duration-300"
+              required
             />
           </div>
 
@@ -50,6 +93,7 @@ function AdminLogin() {
               value={formData.pass}
               onChange={handleChange}
               className="w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 text-[#1D3557] font-bold placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#457b9d] focus:border-transparent transition-all duration-300"
+              required
             />
           </div>
 
@@ -61,12 +105,21 @@ function AdminLogin() {
 
           <button
             type="submit"
-            className="w-full py-4 rounded-xl font-bold text-white bg-[#457b9d] hover:bg-[#36607a] hover:shadow-lg hover:shadow-blue-900/20 hover:-translate-y-1 transition-all duration-300"
+            disabled={loading}
+            className="w-full bg-[#457b9d] hover:bg-[#1D3557] disabled:bg-slate-400 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
           >
-            Login
+            {loading ? 'Logging in...' : 'Login as Admin'}
           </button>
         </form>
 
+        <div className="text-center mt-6">
+          <Link
+            to="/"
+            className="text-[#457b9d] hover:text-[#1D3557] font-bold transition-colors duration-300"
+          >
+            ← Back to Home
+          </Link>
+        </div>
       </div>
     </div>
   );

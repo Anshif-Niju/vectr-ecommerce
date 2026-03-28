@@ -23,9 +23,9 @@ function Register() {
           <div className={registerStyles.inputGroup}>
             <input
               type="text"
-              name="name"
+              name="username"
               placeholder="Full Name"
-              value={formData.name}
+              value={formData.username}
               onChange={handleChange}
               className={registerStyles.input}
               required

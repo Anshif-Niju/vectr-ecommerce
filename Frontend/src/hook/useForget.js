@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../service/api';
-import { getUserByEmail } from '../service/authService';
+import { toast } from 'react-hot-toast';
 
 export const useForget = () => {
   const navigate = useNavigate();
@@ -11,7 +11,6 @@ export const useForget = () => {
     pass: '',
     rePass: '',
   });
-  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     setFormData({
@@ -23,24 +22,33 @@ export const useForget = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // ✅ basic validation
+    if (!formData.email || !formData.pass || !formData.rePass) {
+      toast.error("All fields required");
+      return;
+    }
+
+    if (formData.pass !== formData.rePass) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
     try {
-      const res = await getUserByEmail(formData.email);
-
-      if (res.length === 0) {
-        setError('The email is not valid');
-        return;
-      }
-
-      const id = res[0].id;
-
-      await api.patch(`/users/${id}`, {
+      // ✅ call backend API
+      await api.post('/users/reset-password', {
+        email: formData.email,
         password: formData.rePass,
       });
 
+      toast.success("Password updated successfully");
       navigate('/login');
+
     } catch (error) {
-      console.log(error);
+      toast.error(
+        error.response?.data?.message || "Reset failed"
+      );
     }
   };
-  return { formData, handleChange, handleSubmit, error };
+
+  return { formData, handleChange, handleSubmit };
 };

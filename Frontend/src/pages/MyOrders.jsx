@@ -13,7 +13,7 @@ function MyOrders() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await api.get(`/Bookings?userId=${user.id}`);
+        const res = await api.get('/orders/my');
         setProduct(res.data);
       } catch (error) {
         console.log('Error fetching orders:', error);

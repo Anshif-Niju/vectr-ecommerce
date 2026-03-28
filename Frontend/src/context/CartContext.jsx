@@ -1,11 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-} from 'react';
+import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import api from '../service/api';
 import { useUser } from '../context/UserContext';
 import { toast } from 'react-hot-toast';
@@ -14,8 +7,9 @@ const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
-  const { user } = useUser();
+  const { user, loading } = useUser();
 
+  // ✅ FETCH CART
   useEffect(() => {
     const fetchCart = async () => {
       try {
@@ -24,86 +18,82 @@ export const CartProvider = ({ children }) => {
           return;
         }
 
-        const res = await api.get(`/Cart?userId=${user.id}`);
+        const res = await api.get('/cart');
         setCart(res.data);
       } catch (error) {
-        console.error(error);
+        console.error(
+          'Cart fetch error',
+          error.response?.data || error.message,
+        );
+        setCart([]);
       }
     };
 
+    if (loading) return;
     fetchCart();
-  }, [user]);
+  }, [user, loading]);
 
-  const addProduct = async (product, qty) => {
+  // ✅ ADD PRODUCT
+  const addProduct = async (product, qty = 1) => {
     if (!user) {
-      toast.success('please Login');
+      toast.error('Please login');
+      return;
     }
+
     try {
-      const res = await api.get(
-        `/Cart?userId=${user.id}&product.id=${product.id}`,
-      );
-      if (res.data.length > 0) {
-        const cartItem = res.data[0];
-        const newSize = cartItem.size + qty;
+      const res = await api.post('/cart', {
+        productId: product._id,
+        quantity: qty,
+      });
 
-        await api.patch(`/Cart/${cartItem.id}`, {
-          size: newSize,
-        });
+      setCart(res.data); // backend returns updated cart
+      toast.success('Added to cart');
+    } catch (error) {
+      console.log(error);
+      toast.error('Failed to add');
+    }
+  };
 
-        toast.success('Product size Updated');
+  // ✅ REMOVE SINGLE ITEM
+  const removeCart = async (cartId) => {
+    try {
+      const res = await api.delete(`/cart/${cartId}`);
+      setCart(res.data); // updated cart
 
-        setCart((prev) =>
-          prev.map((item) =>
-            item.id == cartItem.id ? { ...item, size: newSize } : item,
-          ),
-        );
-      } else {
-        const response = await api.post('/Cart', {
-          userId: user.id,
-          product: product,
-          size: qty || 1,
-        });
-
-        toast.success('Product added');
-        setCart((prev) => [...prev, response.data]);
-      }
+      toast.success('Item removed');
     } catch (error) {
       console.log(error);
     }
   };
 
+  // ✅ CLEAR CART
   const clearCart = async () => {
     try {
-      const deletePromises = cart.map((item) => api.delete(`/Cart/${item.id}`));
-      await Promise.all(deletePromises);
-
+      await api.delete('/cart/clear');
       setCart([]);
+
+      toast.success('Cart cleared');
     } catch (error) {
       toast.error('Error clearing cart');
     }
   };
 
-  const removeCart = async (cartId) => {
-    try {
-      await api.delete(`/Cart/${cartId}`);
-      setCart((prev) => prev.filter((item) => cartId !== item.id));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+  // ✅ CART COUNT
   const cartLength = cart.length;
 
+  // ✅ TOTAL PRICE
   const totalPrice = useMemo(() => {
     return cart.reduce((total, item) => {
-      return total + item.product.price * item.size;
+      return total + item.product.price * item.quantity;
     }, 0);
   }, [cart]);
 
+  // ✅ DELIVERY
   const delivery = useMemo(
     () => (cart.length === 0 ? 0 : totalPrice > 100000 ? 0 : 199),
     [cart.length, totalPrice],
   );
+
   return (
     <CartContext.Provider
       value={{
@@ -111,9 +101,8 @@ export const CartProvider = ({ children }) => {
         cartLength,
         totalPrice,
         delivery,
-        setCart,
-        removeCart,
         addProduct,
+        removeCart,
         clearCart,
       }}
     >

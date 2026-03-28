@@ -1,9 +1,11 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import api from '../service/api';
+import { useUser } from './UserContext';
 
 const StatsContext = createContext();
 
 export function StatsProvider({ children }) {
+  const { user } = useUser();
   const [stats, setStats] = useState({
     users: [],
     product: [],
@@ -18,39 +20,45 @@ export function StatsProvider({ children }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Only fetch admin data if user is authenticated and is admin
+        if (!user || user.role !== 'admin') {
+          return;
+        }
+
         const [userRes, productRes, ordersRes] = await Promise.all([
           api.get('/users'),
           api.get('/products'),
-          api.get('/Bookings'),
+          api.get('/orders'),
         ]);
         const usersData = userRes.data;
         const productData = productRes.data;
-        const bookingData = ordersRes.data;
-
-        const orderProduct = bookingData.flatMap((item) => item.product);
+        const ordersData = ordersRes.data;
 
         const filterUser = usersData.filter((user) => user.role !== 'admin');
 
-        const revenue = orderProduct.reduce(
-          (total, item) => total + item.price * item.size || 0,
+        const revenue = ordersData.reduce(
+          (total, order) => total + order.totalPrice,
           0,
         );
 
         setStats({
           users: filterUser,
           product: productData,
-          orders: bookingData,
+          orders: ordersData,
           totalUsers: filterUser.length,
           totalRevenue: revenue,
-          totalOrders: bookingData.length,
+          totalOrders: ordersData.length,
           totalProducts: productData.length,
         });
       } catch (error) {
-        console.log(error);
+        console.log('Error fetching admin stats:', error);
       }
     };
-    fetchData();
-  }, []);
+
+    if (user) {
+      fetchData();
+    }
+  }, [user]);
 
   const toggleActive = async (userID) => {
     try {

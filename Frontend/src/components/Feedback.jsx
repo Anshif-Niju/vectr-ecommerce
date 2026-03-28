@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import api from '../service/api';
 import { feedbackStyles } from './Tailwind/tailwind';
@@ -34,12 +34,12 @@ function Feedback() {
       return;
     }
     if (!emailRegex.test(formData.email)) {
-      formData.email = '';
+      setFormData((prev) => ({ ...prev, email: '' }));
       toast.error('Invalid email');
       return;
     }
 
-    await api.post('/Feedback', formData);
+    await api.post('/feedback', formData);
     setFormData({
       name: '',
       email: '',

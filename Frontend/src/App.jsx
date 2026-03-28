@@ -10,39 +10,43 @@ import Cart from './pages/Cart';
 import Wishlist from './pages/Wishlist';
 import CheckOut from './pages/CheckOut';
 import MyOrders from './pages/MyOrders';
+import AdminLogin from './pages/admin/AdminLogin';
 import Dashboard from './pages/admin/Dashboard';
 import UserList from './pages/admin/UserList';
 import Orders from './pages/admin/Orders';
 import Products from './pages/admin/Products';
 import ScrollTop from './components/ScrollTop';
 import { Toaster } from 'react-hot-toast';
+import { useUser } from './context/UserContext';
 
 const ProtectedRoutes = () => {
-  const user = JSON.parse(sessionStorage.getItem('user'));
-  if (!user) return <Navigate to="/login" />;
+  const { user } = useUser();
 
+  if (!user) return <Navigate to="/login" />;
   if (user.role !== 'admin') return <Navigate to="/home" />;
+
   return <Outlet />;
 };
 
 const PublicRoutes = () => {
-  const user = JSON.parse(sessionStorage.getItem('user'));
+  const { user } = useUser();
+
   if (user) {
-    if (user.role == 'admin') {
-     return <Navigate to="/admin/dashboard" replace />;
+    if (user.role === 'admin') {
+      return <Navigate to="/admin/dashboard" replace />;
     }
-    <Navigate to="/home" replace />;
-    
+    return <Navigate to="/home" replace />;
   }
+
   return <Outlet />;
 };
 
 const PrivateRoutes = () => {
-  const user = JSON.parse(sessionStorage.getItem('user'));
-  if (!user) {
-    <Navigate to="/login"  />;
-  }
+  const { user } = useUser();
+
+  if (!user) return <Navigate to="/login" />;
   if (user.role === 'admin') return <Navigate to="/admin/dashboard" />;
+
   return <Outlet />;
 };
 
@@ -64,6 +68,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forget" element={<Forget />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/" element={<Navigate to="/login" />} />
         </Route>
 

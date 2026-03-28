@@ -7,7 +7,7 @@
       "img": "",
       "password": "1234",
       "isActive": true,
-      "lastActive": "Mon Mar 16 2026",
+      "lastActive": "Tue Feb 17 2026",
       "role": "user"
     },
     {
@@ -413,23 +413,7 @@
       "size": 5
     },
     {
-      "id": "aa14",
-      "userId": "9eb7",
-      "product": {
-        "id": "1",
-        "name": "Dell",
-        "img": "/src/assets/product/Acer.png",
-        "price": 57990,
-        "rent": 1000,
-        "description": " This Acer Nitro Lite 16 gaming laptop is designed to deliver a robust performance for gaming enthusiasts and casual gamers alike. Featuring a 40.60 cm (16) WUXGA IPS display, it offers vibrant colours and the 165 Hz refresh rate delivers fluid motion. Powered by an Intel Core i5-13420H processor and NVIDIA GeForce RTX 3050 GPU, this laptop allows you to have smooth and intense gaming sessions. With a versatile connectivity option, it facilitates easy connection to peripherals and networks.",
-        "smallDes": " The Acer Nitro is a powerful...",
-        "category": "acer",
-        "isActive": true
-      },
-      "size": 11
-    },
-    {
-      "id": "aef8",
+      "id": "d5b6",
       "userId": "9eb7",
       "product": {
         "id": "2",
@@ -442,7 +426,7 @@
         "category": "dell",
         "isActive": true
       },
-      "size": 11
+      "size": 4
     }
   ],
   "Bookings": [
@@ -1216,6 +1200,38 @@
         "description": " This Acer Nitro Lite 16 gaming laptop is designed to deliver a robust performance for gaming enthusiasts and casual gamers alike. Featuring a 40.60 cm (16) WUXGA IPS display, it offers vibrant colours and the 165 Hz refresh rate delivers fluid motion. Powered by an Intel Core i5-13420H processor and NVIDIA GeForce RTX 3050 GPU, this laptop allows you to have smooth and intense gaming sessions. With a versatile connectivity option, it facilitates easy connection to peripherals and networks.",
         "smallDes": " The Acer Nitro is a powerful...",
         "category": "acer",
+        "isActive": true
+      }
+    },
+    {
+      "id": "2846",
+      "userId": "9eb7",
+      "productId": "2",
+      "product": {
+        "id": "2",
+        "name": "DELL Alienware ",
+        "img": "/src/assets/product/Dell.png",
+        "price": 249990,
+        "rent": 800,
+        "description": "Get a laptop that can handle several tasks well and knows your demands. The Dell Alienware laptop offers amazing performance across all of your favourite games and programmes thanks to its integrated 14-core 12th Gen Intel Core CPU. Additionally, NVIDIA GeForce RTX graphics, which feature NVIDIA Ray Tracing, NVIDIA Max-Q, and NVIDIA Dynamic Learning Super Sampling (DLSS) technology, let you push performance to its maximum limit. Enjoy lightning-fast gaming with ease thanks to the high-speed capabilities of Killer Wi-Fi 6 and USB 3.2 Gen 2 Type-C, which delivers data at up to 40 Gbps. Moreover, Dolby Vision takes advantage of information that studios and developers provide to deliver greater colour palettes and breathtaking visual effects. The scalable sound system provided by Dolby Atmos, on the other hand, provides each voice and instrument with its own space, allowing you to experience a game exactly as its creators intended.",
+        "smallDes": " The DELL Alienware  is a good...",
+        "category": "dell",
+        "isActive": true
+      }
+    },
+    {
+      "id": "e523",
+      "userId": "9eb7",
+      "productId": "3",
+      "product": {
+        "id": "3",
+        "name": "Lenovo LOQ",
+        "img": "/src/assets/product/Lenovo.png",
+        "price": 68980,
+        "rent": null,
+        "description": "This Lenovo LOQ Essential laptop comes with a low-power design, featuring 12th Gen Intel Core processors and 3050A NVIDIA GeForce RTX graphics. Crafted for students and first-time gamers, this laptop is powered by AI-based DLSS 3. Furthermore, you can enjoy a 16:9 FHD display, 144 Hz refresh rate, and 300 nits of brightness. Besides, this laptop offers an ergonomically designed keypad for maximum typing comfort, an efficient cooling system, a 57 Whr fast-charging battery, and a Lenovo Vantage.",
+        "smallDes": "Lenovo LOQ is a Best....",
+        "category": "lenovo",
         "isActive": true
       }
     }

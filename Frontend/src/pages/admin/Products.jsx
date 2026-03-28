@@ -2,12 +2,11 @@ import { useState, useEffect } from 'react';
 import SideBar from './SideBar';
 import { useStats } from '../../context/StatsContext';
 import api from '../../service/api';
-import {toast} from 'react-hot-toast';
-
+import { toast } from 'react-hot-toast';
 
 function Products() {
   const { stats } = useStats();
-  const [products, setProducts] = useState(stats.product || []);
+  const [products, setProducts] = useState([]);
   const [open, setOpen] = useState(false);
   const [activate, setActivate] = useState(true);
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -33,7 +32,7 @@ function Products() {
 
   useEffect(() => {
     if (stats.product) {
-      setProducts(stats.product);
+      setProducts([...stats.product]);
     }
   }, [stats.product]);
 
@@ -60,7 +59,7 @@ function Products() {
         ),
       );
       setActivate(!activate);
-      toast.success(`Product Details Updated`)
+      toast.success(`Product Details Updated`);
     } catch (error) {}
   };
 
@@ -75,7 +74,7 @@ function Products() {
         prev.map((item) => (item.id === selectedProduct.id ? res.data : item)),
       );
       setOpen(false);
-      toast.success(`Product Details Updated`)
+      toast.success(`Product Details Updated`);
     } catch (error) {
       console.log(error);
     }
@@ -96,7 +95,7 @@ function Products() {
         isActive: true,
       });
       setIsAddOpen(false);
-      toast.success(`Product Added Succesfully`)
+      toast.success(`Product Added Succesfully`);
     } catch (error) {
       console.log(error);
     }

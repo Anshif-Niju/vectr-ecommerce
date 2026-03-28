@@ -20,7 +20,6 @@ function Checkout() {
   });
   const [payment, setPayment] = useState(null);
   const { cart, totalPrice, clearCart } = useCart();
-  const { user } = useUser();
 
   const handleChange = (e) => {
     setFormData({
@@ -47,20 +46,9 @@ function Checkout() {
       return;
     }
     try {
-      const addCart = cart.map((item) => ({
-        productId: item.product.id,
-        name: item.product.name,
-        price: item.product.price,
-        img: item.product.img,
-        size: item.size,
-      }));
-      await api.post('/Bookings', {
-        userId: user.id,
-        orderDate: new Date().toDateString(),
-        product: addCart,
+      await api.post('/orders', {
         address: formData,
-        payment: payment,
-        status: 'Delivery Soon',
+        paymentMethod: payment,
       });
 
       toast.success('Order Placed Successfully');

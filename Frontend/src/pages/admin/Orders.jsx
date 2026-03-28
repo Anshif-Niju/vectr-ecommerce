@@ -4,7 +4,7 @@ import SideBar from './SideBar';
 
 function Orders() {
   const { stats } = useStats();
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState(stats.orders.reverse());
 
   useEffect(() => {
     setOrders(stats.orders.reverse());
@@ -48,24 +48,20 @@ function Orders() {
                     Shipping Address
                   </p>
 
-                  <p className="text-sm text-slate-200">
-                    {order.address.name}
-                  </p>
+                  <p className="text-sm text-slate-200">{order.address.name}</p>
                   <p className="text-sm text-slate-300">
                     {order.address.email}
                   </p>
                   <p className="text-sm text-slate-300">
                     {order.address.number}
                   </p>
-                  <p className="text-sm text-slate-300">
-                    {order.address.city}
-                  </p>
+                  <p className="text-sm text-slate-300">{order.address.city}</p>
                   <p className="text-sm text-slate-300">
                     {order.address.address}
                   </p>
                 </div>
 
-                <div className="space-y-3 my-3" >
+                <div className="space-y-3 my-3">
                   <div className="bg-slate-900/50 rounded-xl p-4">
                     <p className="text-xs font-bold text-slate-400 mb-2 uppercase">
                       Items

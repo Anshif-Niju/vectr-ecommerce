@@ -24,7 +24,7 @@ function Login() {
               type="email"
               placeholder="you@example.com"
               name="email"
-              value={formData.email || ''} 
+              value={formData.email || ''}
               onChange={handleChange}
               className={loginStyles.input}
             />
@@ -59,6 +59,12 @@ function Login() {
           Don’t have an account?{' '}
           <Link to="/register" replace className={loginStyles.registerLink}>
             Register
+          </Link>
+        </p>
+
+        <p className={loginStyles.footerText}>
+          <Link to="/admin/login" className={loginStyles.registerLink}>
+            Admin Login
           </Link>
         </p>
       </div>

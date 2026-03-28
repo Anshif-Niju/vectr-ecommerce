@@ -1,0 +1,184 @@
+[
+    {
+      "id": "1",
+      "name": "Dell",
+      "img": "/src/assets/product/Acer.png",
+      "price": 57990,
+      "rent": 1000,
+      "description": " This Acer Nitro Lite 16 gaming laptop is designed to deliver a robust performance for gaming enthusiasts and casual gamers alike. Featuring a 40.60 cm (16) WUXGA IPS display, it offers vibrant colours and the 165 Hz refresh rate delivers fluid motion. Powered by an Intel Core i5-13420H processor and NVIDIA GeForce RTX 3050 GPU, this laptop allows you to have smooth and intense gaming sessions. With a versatile connectivity option, it facilitates easy connection to peripherals and networks.",
+      "smallDes": " The Acer Nitro is a powerful...",
+      "category": "acer",
+      "isActive": true
+    },
+    {
+      "id": "2",
+      "name": "DELL Alienware ",
+      "img": "/src/assets/product/Dell.png",
+      "price": 249990,
+      "rent": 800,
+      "description": "Get a laptop that can handle several tasks well and knows your demands. The Dell Alienware laptop offers amazing performance across all of your favourite games and programmes thanks to its integrated 14-core 12th Gen Intel Core CPU. Additionally, NVIDIA GeForce RTX graphics, which feature NVIDIA Ray Tracing, NVIDIA Max-Q, and NVIDIA Dynamic Learning Super Sampling (DLSS) technology, let you push performance to its maximum limit. Enjoy lightning-fast gaming with ease thanks to the high-speed capabilities of Killer Wi-Fi 6 and USB 3.2 Gen 2 Type-C, which delivers data at up to 40 Gbps. Moreover, Dolby Vision takes advantage of information that studios and developers provide to deliver greater colour palettes and breathtaking visual effects. The scalable sound system provided by Dolby Atmos, on the other hand, provides each voice and instrument with its own space, allowing you to experience a game exactly as its creators intended.",
+      "smallDes": " The DELL Alienware  is a good...",
+      "category": "dell",
+      "isActive": true
+    },
+    {
+      "id": "3",
+      "name": "Lenovo LOQ",
+      "img": "/src/assets/product/Lenovo.png",
+      "price": 68980,
+      "rent": null,
+      "description": "This Lenovo LOQ Essential laptop comes with a low-power design, featuring 12th Gen Intel Core processors and 3050A NVIDIA GeForce RTX graphics. Crafted for students and first-time gamers, this laptop is powered by AI-based DLSS 3. Furthermore, you can enjoy a 16:9 FHD display, 144 Hz refresh rate, and 300 nits of brightness. Besides, this laptop offers an ergonomically designed keypad for maximum typing comfort, an efficient cooling system, a 57 Whr fast-charging battery, and a Lenovo Vantage.",
+      "smallDes": "Lenovo LOQ is a Best....",
+      "category": "lenovo",
+      "isActive": true
+    },
+    {
+      "id": "4",
+      "name": "ASUS TUF Gaming A15 pro",
+      "img": "/src/assets/product/Asus.png",
+      "price": 72990,
+      "rent": null,
+      "description": "This ASUS TUF Gaming A15 delivers a smooth experience for gaming, streaming, and multitasking with an AMD Ryzen 7000 Series CPU and high frame rate graphics, despite memory limited to 4800MHz. It offers clear audio via dual speakers with customisable modes and an integrated equaliser. The laptop features comprehensive Self-cleaning Cooling 2.0 for reliability, a desktop-style RGB keyboard with highlighted WASD keys and a 20-million-press lifespan, and military-grade MIL-STD-810H durability. Upgrades are easy with a user-friendly pop-open screw for RAM and SSD expansion.",
+      "smallDes": " The ASUS TUF Gaming A15 is a powerful...",
+      "category": "asus",
+      "isActive": true
+    },
+    {
+      "id": "5",
+      "name": "Acer NITRO LITE  pro",
+      "img": "/src/assets/product/Acer.png",
+      "price": 57990,
+      "rent": 1000,
+      "description": " This Acer Nitro Lite 16 gaming laptop is designed to deliver a robust performance for gaming enthusiasts and casual gamers alike. Featuring a 40.60 cm (16) WUXGA IPS display, it offers vibrant colours and the 165 Hz refresh rate delivers fluid motion. Powered by an Intel Core i5-13420H processor and NVIDIA GeForce RTX 3050 GPU, this laptop allows you to have smooth and intense gaming sessions. With a versatile connectivity option, it facilitates easy connection to peripherals and networks.",
+      "smallDes": " The Acer Nitro is a powerful...",
+      "category": "acer",
+      "isActive": true
+    },
+    {
+      "id": "6",
+      "name": "DELL Alienware  Pro",
+      "img": "/src/assets/product/Dell.png",
+      "price": 249990,
+      "rent": 800,
+      "description": "Get a laptop that can handle several tasks well and knows your demands. The Dell Alienware laptop offers amazing performance across all of your favourite games and programmes thanks to its integrated 14-core 12th Gen Intel Core CPU. Additionally, NVIDIA GeForce RTX graphics, which feature NVIDIA Ray Tracing, NVIDIA Max-Q, and NVIDIA Dynamic Learning Super Sampling (DLSS) technology, let you push performance to its maximum limit. Enjoy lightning-fast gaming with ease thanks to the high-speed capabilities of Killer Wi-Fi 6 and USB 3.2 Gen 2 Type-C, which delivers data at up to 40 Gbps. Moreover, Dolby Vision takes advantage of information that studios and developers provide to deliver greater colour palettes and breathtaking visual effects. The scalable sound system provided by Dolby Atmos, on the other hand, provides each voice and instrument with its own space, allowing you to experience a game exactly as its creators intended.",
+      "smallDes": " The DELL Alienware  is a good...",
+      "category": "dell",
+      "isActive": true
+    },
+    {
+      "id": "7",
+      "name": "Lenovo LOQ",
+      "img": "/src/assets/product/Lenovo.png",
+      "price": 68980,
+      "rent": null,
+      "description": "This Lenovo LOQ Essential laptop comes with a low-power design, featuring 12th Gen Intel Core processors and 3050A NVIDIA GeForce RTX graphics. Crafted for students and first-time gamers, this laptop is powered by AI-based DLSS 3. Furthermore, you can enjoy a 16:9 FHD display, 144 Hz refresh rate, and 300 nits of brightness. Besides, this laptop offers an ergonomically designed keypad for maximum typing comfort, an efficient cooling system, a 57 Whr fast-charging battery, and a Lenovo Vantage.",
+      "smallDes": "Lenovo LOQ is a Best....",
+      "category": "lenovo",
+      "isActive": true
+    },
+    {
+      "id": "8",
+      "name": "ASUS TUF Gaming A15",
+      "img": "/src/assets/product/Asus.png",
+      "price": 72990,
+      "rent": null,
+      "description": "This ASUS TUF Gaming A15 delivers a smooth experience for gaming, streaming, and multitasking with an AMD Ryzen 7000 Series CPU and high frame rate graphics, despite memory limited to 4800MHz. It offers clear audio via dual speakers with customisable modes and an integrated equaliser. The laptop features comprehensive Self-cleaning Cooling 2.0 for reliability, a desktop-style RGB keyboard with highlighted WASD keys and a 20-million-press lifespan, and military-grade MIL-STD-810H durability. Upgrades are easy with a user-friendly pop-open screw for RAM and SSD expansion.",
+      "smallDes": " The ASUS TUF Gaming A15 is a powerful...",
+      "category": "asus",
+      "isActive": true
+    },
+    {
+      "id": "9",
+      "name": "Acer NITRO LITE ",
+      "img": "/src/assets/product/Acer.png",
+      "price": 57990,
+      "rent": 1000,
+      "description": " This Acer Nitro Lite 16 gaming laptop is designed to deliver a robust performance for gaming enthusiasts and casual gamers alike. Featuring a 40.60 cm (16) WUXGA IPS display, it offers vibrant colours and the 165 Hz refresh rate delivers fluid motion. Powered by an Intel Core i5-13420H processor and NVIDIA GeForce RTX 3050 GPU, this laptop allows you to have smooth and intense gaming sessions. With a versatile connectivity option, it facilitates easy connection to peripherals and networks.",
+      "smallDes": " The Acer Nitro is a powerful...",
+      "category": "acer",
+      "isActive": true
+    },
+    {
+      "id": "10",
+      "name": "DELL Alienware ",
+      "img": "/src/assets/product/Dell.png",
+      "price": 249990,
+      "rent": 800,
+      "description": "Get a laptop that can handle several tasks well and knows your demands. The Dell Alienware laptop offers amazing performance across all of your favourite games and programmes thanks to its integrated 14-core 12th Gen Intel Core CPU. Additionally, NVIDIA GeForce RTX graphics, which feature NVIDIA Ray Tracing, NVIDIA Max-Q, and NVIDIA Dynamic Learning Super Sampling (DLSS) technology, let you push performance to its maximum limit. Enjoy lightning-fast gaming with ease thanks to the high-speed capabilities of Killer Wi-Fi 6 and USB 3.2 Gen 2 Type-C, which delivers data at up to 40 Gbps. Moreover, Dolby Vision takes advantage of information that studios and developers provide to deliver greater colour palettes and breathtaking visual effects. The scalable sound system provided by Dolby Atmos, on the other hand, provides each voice and instrument with its own space, allowing you to experience a game exactly as its creators intended.",
+      "smallDes": " The DELL Alienware  is a good...",
+      "category": "dell",
+      "isActive": true
+    },
+    {
+      "id": "11",
+      "name": "Lenovo LOQ",
+      "img": "/src/assets/product/Lenovo.png",
+      "price": 68980,
+      "rent": null,
+      "description": "This Lenovo LOQ Essential laptop comes with a low-power design, featuring 12th Gen Intel Core processors and 3050A NVIDIA GeForce RTX graphics. Crafted for students and first-time gamers, this laptop is powered by AI-based DLSS 3. Furthermore, you can enjoy a 16:9 FHD display, 144 Hz refresh rate, and 300 nits of brightness. Besides, this laptop offers an ergonomically designed keypad for maximum typing comfort, an efficient cooling system, a 57 Whr fast-charging battery, and a Lenovo Vantage.",
+      "smallDes": "Lenovo LOQ is a Best....",
+      "category": "lenovo",
+      "isActive": true
+    },
+    {
+      "id": "12",
+      "name": "ASUS TUF Gaming A15",
+      "img": "/src/assets/product/Asus.png",
+      "price": 72990,
+      "rent": null,
+      "description": "This ASUS TUF Gaming A15 delivers a smooth experience for gaming, streaming, and multitasking with an AMD Ryzen 7000 Series CPU and high frame rate graphics, despite memory limited to 4800MHz. It offers clear audio via dual speakers with customisable modes and an integrated equaliser. The laptop features comprehensive Self-cleaning Cooling 2.0 for reliability, a desktop-style RGB keyboard with highlighted WASD keys and a 20-million-press lifespan, and military-grade MIL-STD-810H durability. Upgrades are easy with a user-friendly pop-open screw for RAM and SSD expansion.",
+      "smallDes": " The ASUS TUF Gaming A15 is a powerful...",
+      "category": "asus",
+      "isActive": true
+    },
+    {
+      "id": "3210",
+      "name": "New Product",
+      "img": "/src/assets/product/Acer.png",
+      "price": "123345",
+      "description": "This ASUS TUF Gaming A15 delivers a smooth experience for gaming, streaming, and multitasking with an AMD Ryzen 7000 Series CPU and high frame rate graphics, despite memory limited to 4800MHz. It offers clear audio via dual speakers with customisable modes and an integrated equaliser. The laptop features comprehensive Self-cleaning Cooling 2.0 for reliability, a desktop-style RGB keyboard with highlighted WASD keys and a 20-million-press lifespan, and military-grade MIL-STD-810H durability. Upgrades are easy with a user-friendly pop-open screw for RAM and SSD expansion.",
+      "smallDes": "This Good perfomance...",
+      "category": "Dell",
+      "isActive": true
+    },
+    {
+      "id": "db93",
+      "name": "New Product 2",
+      "img": "/src/assets/product/Lenovo.png",
+      "price": "12345678",
+      "description": "This Lenovo LOQ Essential laptop comes with a low-power design, featuring 12th Gen Intel Core processors and 3050A NVIDIA GeForce RTX graphics. Crafted for students and first-time gamers, this laptop is powered by AI-based DLSS 3. Furthermore, you can enjoy a 16:9 FHD display, 144 Hz refresh rate, and 300 nits of brightness. Besides, this laptop offers an ergonomically designed keypad for maximum typing comfort, an efficient cooling system, a 57 Whr fast-charging battery, and a Lenovo Vantage.",
+      "smallDes": "This IS very Well...",
+      "category": "Lenovo",
+      "isActive": true
+    },
+    {
+      "id": "2966",
+      "name": "txet product",
+      "img": "/src/assets/product/Acer.png",
+      "price": "900",
+      "description": "hey it okkdhbfnajsdhkn",
+      "smallDes": "this is godd..",
+      "category": "lenovo",
+      "isActive": true
+    },
+    {
+      "id": "39d3",
+      "name": "proudt 345",
+      "img": "/src/assets/product/Acer.png",
+      "price": "543342",
+      "description": "srxdfcgvhbjnm,",
+      "smallDes": "sxdfgcvhbjn",
+      "category": "Lenovo",
+      "isActive": true
+    },
+    {
+      "id": "92d6",
+      "name": "New PROduct",
+      "img": "",
+      "price": "123456",
+      "description": "very better",
+      "smallDes": "thus good",
+      "category": "Lenovo",
+      "isActive": true
+    }
+  ]
