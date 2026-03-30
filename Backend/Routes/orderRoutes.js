@@ -3,6 +3,7 @@ import {
   createOrder,
   getMyOrders,
   getAllOrders,
+  updateOrderStatus,
 } from '../controllers/orderController.js';
 import { protect, admin } from '../middlewares/authMiddleware.js';
 
@@ -13,5 +14,6 @@ router.post('/', protect, createOrder);
 router.get('/my', protect, getMyOrders);
 
 router.get('/', protect, admin, getAllOrders); // admin only
+router.patch('/:id/status', protect, admin, updateOrderStatus);
 
 export default router;

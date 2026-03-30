@@ -1,5 +1,13 @@
 import Order from '../models/Order.js';
 import Cart from '../models/Cart.js';
+import mongoose from 'mongoose';
+
+const allowedOrderStatuses = [
+  'Processing',
+  'Delivery Soon',
+  'Delivery Today',
+  'Delivery Completed',
+];
 
 export const createOrder = async (req, res, next) => {
   try {
@@ -60,6 +68,39 @@ export const getAllOrders = async (req, res, next) => {
       .sort({ createdAt: -1 });
 
     res.json(orders);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateOrderStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid order id' });
+    }
+
+    if (!allowedOrderStatuses.includes(status)) {
+      return res.status(400).json({
+        message: 'Invalid order status',
+      });
+    }
+
+    const order = await Order.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true, runValidators: true },
+    )
+      .populate('products.productId')
+      .populate('userId', 'username email');
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    res.json(order);
   } catch (error) {
     next(error);
   }

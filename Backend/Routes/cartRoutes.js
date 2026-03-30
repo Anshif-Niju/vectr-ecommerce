@@ -12,8 +12,8 @@ router.get('/', protect, getCart);
 
 router.post('/', protect, addToCart);
 
+router.delete('/clear', protect, clearCart);
 router.delete('/:id', protect, removeFromCart);
 
-router.delete('/clear', protect, clearCart);
 
 export default router;

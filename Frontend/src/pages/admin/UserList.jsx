@@ -1,23 +1,25 @@
 import { useState } from 'react';
 import { useStats } from '../../context/StatsContext';
 import SideBar from './SideBar';
-import { UserCheck, UserMinus, Users, Search } from 'lucide-react'; 
+import { UserCheck, UserMinus, Users, Search } from 'lucide-react';
 
 function UserList() {
-  const { stats, toggleActive } = useStats(); 
-    const [search, setSearch] = useState('');
+  const { stats, toggleActive } = useStats();
+  const [search, setSearch] = useState('');
 
   const filteredUsers = stats.users.filter((user) =>
-    user.name.toLowerCase().includes(search.toLowerCase())
+    (user.username || user.name || '')
+      .toLowerCase()
+      .includes(search.toLowerCase())
   );
 
-  const activeCount = stats.users.filter(u => u.isActive).length;
+  const activeCount = stats.users.filter((u) => u.isActive).length;
   const blockedCount = stats.users.length - activeCount;
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-200 flex relative">
       <SideBar />
-      
+
       <main className="flex-1 p-6 md:p-8 w-full">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
@@ -50,7 +52,7 @@ function UserList() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredUsers.map((user) => (
             <div
-              key={user.id}
+              key={user._id || user.id}
               className={`bg-slate-800/80 rounded-3xl border border-slate-700/50 p-6  transition-all group relative overflow-hidden ${!user.isActive ? 'opacity-80' : ''}`}
             >
               {user.isActive && (
@@ -59,20 +61,21 @@ function UserList() {
 
               <div className="flex justify-between items-start mb-5">
                 <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-slate-700 to-slate-600 flex items-center justify-center text-xl font-bold text-cyan-400 shadow-inner">
-                  {user.name.charAt(0)}
+                  {(user.username || user.name || 'U').charAt(0)}
                 </div>
                 <span className={`px-3 py-1 rounded-full  font-black uppercase text-sm  ${user.isActive ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
                   {user.isActive ? 'Active' : 'Blocked'}
                 </span>
               </div>
 
-              <h2 className="text-xl font-bold text-white truncate">{user.name}</h2>
+              <h2 className="text-xl font-bold text-white truncate">
+                {user.username || user.name}
+              </h2>
 
-                
               <div className="space-y-4 py-4 border-t border-slate-700/50">
                 <div>
                   <label className="text-[10px] uppercase text-slate-500 font-bold block mb-1">User ID:-</label>
-                  <p className="text-sm text-slate-300 truncate">{user.id}</p>
+                  <p className="text-sm text-slate-300 truncate">{user._id || user.id}</p>
                 </div>
                 <div>
                   <label className="text-[10px] uppercase text-slate-500 font-bold block mb-1">Email Address</label>
@@ -80,22 +83,25 @@ function UserList() {
                 </div>
                 <div>
                   <label className="text-[10px] uppercase text-slate-500 font-bold block mb-1">Last Seen</label>
-                  <p className="text-sm text-slate-300">{user.lastActive}</p>
+                  <p className="text-sm text-slate-300">
+                    {user.accountCreatedDate
+                      ? new Date(user.accountCreatedDate).toLocaleDateString()
+                      : 'N/A'}
+                  </p>
                 </div>
               </div>
 
               <div className="mt-6 flex gap-2">
                 <button
-                  onClick={() => toggleActive(user.id)}
+                  onClick={() => toggleActive(user._id || user.id)}
                   className={`flex-1 py-3 rounded-2xl text-xs font-bold transition-all ${
-                    user.isActive 
-                    ? 'bg-slate-700 text-slate-300 hover:bg-red-500 hover:text-white' 
+                    user.isActive
+                    ? 'bg-slate-700 text-slate-300 hover:bg-red-500 hover:text-white'
                     : 'bg-cyan-500 text-white hover:bg-cyan-600 shadow-lg shadow-cyan-500/20'
                   }`}
                 >
                   {user.isActive ? 'Block Account' : 'Unblock Account'}
                 </button>
-              
               </div>
             </div>
           ))}

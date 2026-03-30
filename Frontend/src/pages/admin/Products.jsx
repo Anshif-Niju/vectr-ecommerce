@@ -8,7 +8,6 @@ function Products() {
   const { stats } = useStats();
   const [products, setProducts] = useState([]);
   const [open, setOpen] = useState(false);
-  const [activate, setActivate] = useState(true);
   const [isAddOpen, setIsAddOpen] = useState(false);
 
   const [newProduct, setNewProduct] = useState({
@@ -45,7 +44,7 @@ function Products() {
 
   const handleActivate = async (productID) => {
     try {
-      const currentProduct = products.find((p) => p.id === productID);
+      const currentProduct = products.find((p) => (p._id || p.id) === productID);
       if (!currentProduct) return;
 
       const updatedStatus = !currentProduct.isActive;
@@ -55,10 +54,11 @@ function Products() {
 
       setProducts((prev) =>
         prev.map((item) =>
-          item.id == productID ? { ...item, isActive: updatedStatus } : item,
+          (item._id || item.id) === productID
+            ? { ...item, isActive: updatedStatus }
+            : item,
         ),
       );
-      setActivate(!activate);
       toast.success(`Product Details Updated`);
     } catch (error) {}
   };
@@ -66,12 +66,16 @@ function Products() {
   const handleEdit = async () => {
     try {
       const res = await api.patch(
-        `/products/${selectedProduct.id}`,
+        `/products/${selectedProduct._id || selectedProduct.id}`,
         selectedProduct,
       );
 
       setProducts((prev) =>
-        prev.map((item) => (item.id === selectedProduct.id ? res.data : item)),
+        prev.map((item) =>
+          (item._id || item.id) === (selectedProduct._id || selectedProduct.id)
+            ? res.data
+            : item,
+        ),
       );
       setOpen(false);
       toast.success(`Product Details Updated`);
@@ -82,9 +86,9 @@ function Products() {
 
   const handleAdd = async () => {
     try {
-      await api.post(`/products`, newProduct);
+      const res = await api.post(`/products`, newProduct);
 
-      setProducts((prev) => [...prev, newProduct]);
+      setProducts((prev) => [...prev, res.data]);
       setNewProduct({
         name: '',
         img: '',
@@ -120,7 +124,7 @@ function Products() {
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {products.map((item) => (
               <div
-                key={item.id}
+                key={item._id || item.id}
                 className="bg-slate-800 rounded-2xl shadow-lg p-6 border border-slate-700/50 hover:scale-[1.02] transition"
               >
                 <div className="h-48 w-full bg-slate-700 relative overflow-hidden group">
@@ -136,7 +140,7 @@ function Products() {
                       {item.name}
                     </h2>
                     <p className="text-sm text-slate-400">
-                      Product ID: {item.id}
+                      Product ID: {item._id || item.id}
                     </p>
                   </div>
                   <span
@@ -172,7 +176,7 @@ function Products() {
 
                   <button
                     onClick={() => {
-                      handleActivate(item.id);
+                      handleActivate(item._id || item.id);
                     }}
                     className="bg-cyan-500 hover:bg-cyan-600 px-4 py-2 rounded-lg text-sm font-semibold"
                   >

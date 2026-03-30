@@ -2,10 +2,11 @@ import { Link } from 'react-router-dom';
 import { cardStyles } from './Tailwind/tailwind';
 
 function HomeCard({ product }) {
-  const { id, img, name, smallDes, price } = product;
+  const productId = product._id || product.id;
+  const { img, name, smallDes, price } = product;
 
   return (
-    <div key={id} className={cardStyles.container(id)}>
+    <div key={productId} className={cardStyles.container(productId)}>
       {/* Image Section */}
       <div className={cardStyles.imageWrapper}>
         <img loading="lazy" className={cardStyles.image} src={img} alt={name} />
@@ -22,7 +23,7 @@ function HomeCard({ product }) {
           <span className={cardStyles.price}>{price}</span>
 
           <button className={cardStyles.button}>
-            <Link to={`/itemDetail/${id}`}>View</Link>
+            <Link to={`/itemDetail/${productId}`}>View</Link>
           </button>
         </div>
       </div>

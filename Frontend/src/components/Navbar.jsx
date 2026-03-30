@@ -9,13 +9,12 @@ import { navStyles } from './Tailwind/tailwind';
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const { logout } = useUser();
+  const { user, logout } = useUser();
   const { cartLength } = useCart();
   const [open, setOpen] = useState(false);
   const [profileOpen, setprofileOpen] = useState(false);
   const { wishlistLength } = useWishlist();
-
-  const user = JSON.parse(sessionStorage.getItem('user'));
+  const displayName = user?.username || user?.name || 'Guest';
 
   const scrollTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -95,7 +94,7 @@ export default function Navbar() {
 
             <div className={navStyles.profileArea}>
               <p className={navStyles.userName}>
-                {user ? user.name.split(' ')[0] : 'Guest'}
+                {displayName.split(' ')[0]}
               </p>
 
               {user?.img ? (
@@ -111,7 +110,7 @@ export default function Navbar() {
                   onClick={() => setprofileOpen(!profileOpen)}
                   className={navStyles.userPlaceholder}
                 >
-                  {user?.name?.slice(0, 2).toUpperCase() || 'G'}
+                  {displayName.slice(0, 2).toUpperCase() || 'G'}
                 </div>
               )}
 
@@ -119,7 +118,7 @@ export default function Navbar() {
                 <div className={navStyles.dropdownCard}>
                   <div className={navStyles.dropdownHeader}>
                     <p className={navStyles.dropdownLabel}>Account</p>
-                    <p className={navStyles.dropdownName}>{user?.name}</p>
+                    <p className={navStyles.dropdownName}>{displayName}</p>
                   </div>
                   <button
                     className={navStyles.logoutBtn}

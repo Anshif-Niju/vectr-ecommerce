@@ -62,28 +62,53 @@ export function StatsProvider({ children }) {
 
   const toggleActive = async (userID) => {
     try {
-      const userToUpdate = stats.users.find((u) => u.id == userID);
+      const userToUpdate = stats.users.find((u) => (u._id || u.id) === userID);
 
       if (!userToUpdate) return;
 
       const newStatus = !userToUpdate.isActive;
 
-      await api.patch(`users/${userID}`, {
+      await api.patch(`/users/${userID}`, {
         isActive: newStatus,
       });
 
       setStats((prevStats) => ({
         ...prevStats,
         users: prevStats.users.map((user) =>
-          user.id === userID ? { ...user, isActive: newStatus } : user,
+          (user._id || user.id) === userID
+            ? { ...user, isActive: newStatus }
+            : user,
         ),
       }));
     } catch (error) {
       console.log(error);
     }
   };
+
+  const updateOrderStatus = async (orderId, status) => {
+    try {
+      const { data: updatedOrder } = await api.patch(`/orders/${orderId}/status`, {
+        status,
+      });
+
+      setStats((prevStats) => ({
+        ...prevStats,
+        orders: prevStats.orders.map((order) =>
+          (order._id || order.id) === orderId ? updatedOrder : order,
+        ),
+      }));
+
+      return updatedOrder;
+    } catch (error) {
+      console.log('Error updating order status:', error);
+      throw error;
+    }
+  };
+
   return (
-    <StatsContext.Provider value={{ stats, toggleActive, setStats }}>
+    <StatsContext.Provider
+      value={{ stats, toggleActive, updateOrderStatus, setStats }}
+    >
       {children}
     </StatsContext.Provider>
   );

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import api from '../service/api';
 import WishlistButton from '../components/WishlistButton';
 import AddCart from '../components/AddCartButton';
@@ -19,7 +19,7 @@ function ProductDetails() {
   useEffect(() => {
     const fetchSingleItem = async () => {
       try {
-        const res = await api.get(`products/${id}`);
+        const res = await api.get(`/products/${id}`);
         setProduct(res.data);
       } catch (error) {
         console.log(error);

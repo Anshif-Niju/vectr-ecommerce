@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { cartCardStyles } from './Tailwind/tailwind';
 
-function CartCard({ id, item, size }) {
+function CartCard({ id, item, quantity }) {
   const [msg, setMsg] = useState('');
   const { removeCart, addProduct } = useCart();
 
@@ -11,7 +11,7 @@ function CartCard({ id, item, size }) {
   }
 
   function changeProductSize(amount) {
-    if (amount == -1 && size <= 1) {
+    if (amount === -1 && quantity <= 1) {
       setMsg('Minimum Reached');
       return;
     }
@@ -45,7 +45,7 @@ function CartCard({ id, item, size }) {
                 -
               </button>
 
-              <span className={cartCardStyles.qtyValue}>{size}</span>
+              <span className={cartCardStyles.qtyValue}>{quantity}</span>
 
               <button
                 className={cartCardStyles.qtyBtn}

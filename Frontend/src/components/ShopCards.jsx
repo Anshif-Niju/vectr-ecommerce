@@ -11,8 +11,8 @@ function ProductCard({ product }) {
   return (
     <div className={shopCardStyles.container}>
       <Link
-        to={`/itemDetail/${product.id}`}
-        key={product.id}
+        to={`/itemDetail/${product._id || product.id}`}
+        key={product._id || product.id}
         className={shopCardStyles.linkWrapper}
       >
         <div className={shopCardStyles.imageContainer}>

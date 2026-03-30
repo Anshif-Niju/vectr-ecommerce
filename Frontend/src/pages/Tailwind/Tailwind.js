@@ -218,7 +218,7 @@ export const orderStyles = {
   label: 'text-sm text-gray-500',
   value: 'font-semibold text-[#1D3557]',
   statusBadge:
-    'inline-block px-4 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-700',
+    'inline-block px-4 py-1 text-sm font-semibold rounded-full border',
   totalPrice: 'font-bold text-[#457b9d]',
 
   productRow: 'mt-6 space-y-4 flex items-center gap-6',

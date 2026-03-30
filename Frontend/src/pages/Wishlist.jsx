@@ -25,7 +25,7 @@ function Wishlist() {
         <div className={wishlistStyles.grid}>
           {wishlist.length > 0 ? (
             wishlist.map((item) => (
-              <Cards key={item.id} product={item.product} />
+              <Cards key={item._id || item.id} product={item.product} />
             ))
           ) : (
             <div className={wishlistStyles.emptyWrapper}>

@@ -42,7 +42,7 @@ export const CartProvider = ({ children }) => {
 
     try {
       const res = await api.post('/cart', {
-        productId: product._id,
+        productId: product._id || product.id,
         quantity: qty,
       });
 
@@ -84,7 +84,7 @@ export const CartProvider = ({ children }) => {
   // ✅ TOTAL PRICE
   const totalPrice = useMemo(() => {
     return cart.reduce((total, item) => {
-      return total + item.product.price * item.quantity;
+      return total + (item.product?.price ?? 0) * (item.quantity ?? 1);
     }, 0);
   }, [cart]);
 

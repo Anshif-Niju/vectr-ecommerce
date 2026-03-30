@@ -17,7 +17,7 @@ export const register = async (req, res, next) => {
       password: hashed,
     });
 
-    res.json({ status: 'success', user });
+    res.json({ status: 'user created successfully'});
   } catch (error) {
     next(error);
   }
@@ -33,15 +33,13 @@ export const login = async (req, res, next) => {
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(401).json({ message: 'Invalid password' });
 
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' },
-    );
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '7d',
+    });
 
     res.cookie('token', token, {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'strict',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });

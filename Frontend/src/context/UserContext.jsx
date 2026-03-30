@@ -7,15 +7,31 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 fetch user from cookie (no localStorage needed)
   useEffect(() => {
     const fetchUser = async () => {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        setUser(null);
+        sessionStorage.removeItem('user');
+        setLoading(false);
+        return;
+      }
+
       try {
-        const res = await api.get('/users/me');
+        const normalizedToken = token.replace(/^Bearer\s+/i, '').trim();
+        const res = await api.get('/users/me', {
+          headers: {
+            Authorization: `Bearer ${normalizedToken}`,
+          },
+        });
         setUser(res.data);
+        sessionStorage.setItem('user', JSON.stringify(res.data));
       } catch (error) {
         console.log('Auth failed', error);
+        localStorage.removeItem('token');
         setUser(null);
+        sessionStorage.removeItem('user');
       } finally {
         setLoading(false);
       }
@@ -24,9 +40,9 @@ export const UserProvider = ({ children }) => {
     fetchUser();
   }, []);
 
-  // 🔐 logout
   const logout = () => {
     localStorage.removeItem('token');
+    sessionStorage.removeItem('user');
     setUser(null);
   };
 

@@ -158,7 +158,7 @@ function Home() {
 
           <div className={homeStyles.productGrid}>
             {product.map((p) => (
-              <HomeCard key={p.id} product={p} />
+              <HomeCard key={p._id || p.id} product={p} />
             ))}
           </div>
         </section>

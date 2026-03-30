@@ -113,7 +113,7 @@ function Shop() {
         {/* Products Grid */}
         <div className={shopStyles.grid}>
           {filterProduct.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product._id || product.id} product={product} />
           ))}
         </div>
       </div>

@@ -7,13 +7,13 @@ import {
   getAllUsers,
   updateUser,
 } from '../controllers/userController.js';
-import { validate } from '../middlewares/validateMiddleware.js';
-import { registerSchema } from '../validations/userValidation.js';
+// import { validate } from '../middlewares/validateMiddleware.js';
+// import { registerSchema } from '../validations/userValidation.js';
 import { protect, admin } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/register', validate(registerSchema), register);
+router.post('/register', register);
 router.post('/login', login);
 router.post('/reset-password', resetPassword);
 router.get('/me', protect, getMe);

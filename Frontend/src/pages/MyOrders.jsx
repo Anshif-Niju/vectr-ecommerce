@@ -5,26 +5,40 @@ import Footer from '../components/Footer';
 import { useUser } from '../context/UserContext';
 import api from '../service/api';
 import { orderStyles } from './Tailwind/Tailwind';
+import { getOrderStatusClasses } from '../utils/orderStatus';
 
 function MyOrders() {
-  const [product, setProduct] = useState([]);
+  const [orders, setOrders] = useState([]);
   const { user } = useUser();
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    let intervalId;
+
+    const fetchOrders = async () => {
       try {
         const res = await api.get('/orders/my');
-        setProduct(res.data);
+        setOrders(res.data);
       } catch (error) {
         console.log('Error fetching orders:', error);
       }
     };
 
-    if (user?.id) fetchProducts();
+    if (user) {
+      fetchOrders();
+      intervalId = setInterval(fetchOrders, 15000);
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, [user]);
 
   const calculateOrderTotal = (products) => {
-    return products.reduce((total, item) => total + item.price * item.size, 0);
+    return products.reduce((total, item) => {
+      return total + (item.productId?.price || 0) * (item.quantity || 0);
+    }, 0);
   };
 
   return (
@@ -37,24 +51,26 @@ function MyOrders() {
           <div className={orderStyles.underline}></div>
         </div>
 
-        {product.length > 0 ? (
-          product.map((order) => (
-            <div key={order.id} className={orderStyles.orderCard}>
+        {orders.length > 0 ? (
+          orders.map((order) => (
+            <div key={order._id || order.id} className={orderStyles.orderCard}>
               {/* Order Metadata Header */}
               <div className={orderStyles.orderHeader}>
                 <div>
                   <p className={orderStyles.label}>Order ID</p>
-                  <p className={orderStyles.value}>{order.id}</p>
+                  <p className={orderStyles.value}>{order._id || order.id}</p>
                 </div>
 
                 <div>
                   <p className={orderStyles.label}>Payment</p>
-                  <p className={orderStyles.value}>{order.payment}</p>
+                  <p className={orderStyles.value}>{order.paymentMethod}</p>
                 </div>
 
                 <div>
                   <p className={orderStyles.label}>Status</p>
-                  <span className={orderStyles.statusBadge}>
+                  <span
+                    className={`${orderStyles.statusBadge} ${getOrderStatusClasses(order.status)}`}
+                  >
                     {order.status}
                   </span>
                 </div>
@@ -62,28 +78,32 @@ function MyOrders() {
                 <div>
                   <p className={orderStyles.label}>Order Total</p>
                   <p className={orderStyles.totalPrice}>
-                    ${calculateOrderTotal(order.product)}
+                    ${order.totalPrice ?? calculateOrderTotal(order.products || [])}
                   </p>
                 </div>
               </div>
 
               {/* Items in this Order */}
-              {order.product.map((item, index) => (
+              {(order.products || []).map((item, index) => (
                 <div key={index} className={orderStyles.productRow}>
                   <img
-                    src={item.img}
-                    alt={item.name}
+                    src={item.productId?.img}
+                    alt={item.productId?.name}
                     className={orderStyles.productImg}
                   />
 
                   <div className="flex-1">
-                    <h3 className={orderStyles.productName}>{item.name}</h3>
+                    <h3 className={orderStyles.productName}>
+                      {item.productId?.name}
+                    </h3>
                     <p className={orderStyles.productQty}>
-                      Quantity: {item.size}
+                      Quantity: {item.quantity}
                     </p>
                   </div>
 
-                  <p className={orderStyles.value}>${item.price * item.size}</p>
+                  <p className={orderStyles.value}>
+                    ${(item.productId?.price || 0) * (item.quantity || 0)}
+                  </p>
                 </div>
               ))}
             </div>

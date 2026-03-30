@@ -9,7 +9,7 @@ function CheckoutCard() {
       {cart ? (
         cart.map((item) => {
           return (
-            <div key={item.id} className={checkoutStyles.wrapper}>
+            <div key={item._id || item.id} className={checkoutStyles.wrapper}>
               <div className={checkoutStyles.cardContainer}>
                 <img
                   src={item.product.img}
@@ -30,17 +30,17 @@ function CheckoutCard() {
                     </span>
 
                     <span className={checkoutStyles.qtyText}>
-                      Quantity: {item.size}
+                      Quantity: {item.quantity}
                     </span>
                     <span className={checkoutStyles.totalText}>
-                      Total: {item.product.price * item.size}
+                      Total: {item.product.price * item.quantity}
                     </span>
                   </div>
                 </div>
 
                 <button
                   onClick={() => {
-                    removeCart(item.id);
+                    removeCart(item._id || item.id);
                   }}
                   className={checkoutStyles.removeBtn}
                 >

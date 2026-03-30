@@ -5,7 +5,7 @@ import { wishlistBtnStyles } from './Tailwind/tailwind';
 function WishlistButton({ product }) {
   const { toggleWishlist, isInWishlist } = useWishlist();
 
-  const isLiked = isInWishlist(product.id);
+  const isLiked = isInWishlist(product._id || product.id);
 
   const handleToggle = (e) => {
     e.preventDefault();

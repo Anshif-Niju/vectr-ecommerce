@@ -22,10 +22,10 @@ function Cart() {
           {cart.length > 0 ? (
             cart.map((item) => (
               <CartCard
-                key={item.id}
-                id={item.id}
+                key={item._id || item.id}
+                id={item._id || item.id}
                 item={item.product}
-                size={item.size}
+                quantity={item.quantity}
               />
             ))
           ) : (

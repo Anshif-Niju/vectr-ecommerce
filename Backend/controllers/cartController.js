@@ -1,26 +1,24 @@
 import Cart from '../models/Cart.js';
 
+// ✅ one function, used by all handlers
+const getPopulatedCart = async (userId) => {
+  const cart = await Cart.find({ userId }).populate('productId').lean();
+  return cart.map((item) => ({
+    ...item,
+    product: item.productId || null, // ✅ always has 'product'
+  }));
+};
+
 export const getCart = async (req, res) => {
   try {
-    if (!req.user || !req.user._id) {
+    if (!req.user?._id) {
       return res.status(401).json({ message: 'Authentication required' });
     }
-
-    const cart = await Cart.find({ userId: req.user._id })
-      .populate('productId')
-      .lean();
-
-    const normalized = cart.map((item) => ({
-      ...item,
-      product: item.productId || item.product || null,
-    }));
-
-    return res.json(normalized);
+    const cart = await getPopulatedCart(req.user._id);
+    return res.json(cart);
   } catch (error) {
     console.error('getCart error', error);
-    return res
-      .status(500)
-      .json({ message: 'Could not fetch cart', error: error.message });
+    return res.status(500).json({ message: 'Could not fetch cart' });
   }
 };
 
@@ -28,14 +26,14 @@ export const addToCart = async (req, res) => {
   try {
     const { productId, quantity = 1 } = req.body;
 
-    let item = await Cart.findOne({
+    const existing = await Cart.findOne({
       userId: req.user._id,
       productId,
     });
 
-    if (item) {
-      item.quantity += quantity;
-      await item.save();
+    if (existing) {
+      existing.quantity += quantity;
+      await existing.save();
     } else {
       await Cart.create({
         userId: req.user._id,
@@ -44,30 +42,34 @@ export const addToCart = async (req, res) => {
       });
     }
 
-    const updatedCart = await Cart.find({ userId: req.user._id }).populate(
-      'productId',
-    );
-
-    res.json(updatedCart);
+    // ✅ use shared normalizer
+    const cart = await getPopulatedCart(req.user._id);
+    res.json(cart);
   } catch (error) {
     console.error('addToCart error', error);
-    res
-      .status(500)
-      .json({ message: 'Could not update cart', error: error.message });
+    res.status(500).json({ message: 'Could not update cart' });
   }
 };
 
 export const removeFromCart = async (req, res) => {
-  await Cart.findByIdAndDelete(req.params.id);
+  try {
+    await Cart.findByIdAndDelete(req.params.id);
 
-  const updatedCart = await Cart.find({ userId: req.user._id }).populate(
-    'productId',
-  );
-
-  res.json(updatedCart);
+    // ✅ use shared normalizer
+    const cart = await getPopulatedCart(req.user._id);
+    res.json(cart);
+  } catch (error) {
+    console.error('removeFromCart error', error);
+    res.status(500).json({ message: 'Could not remove item' });
+  }
 };
 
 export const clearCart = async (req, res) => {
-  await Cart.deleteMany({ userId: req.user._id });
-  res.json([]);
+  try {
+    await Cart.deleteMany({ userId: req.user._id });
+    res.json([]);
+  } catch (error) {
+    console.error('clearCart error', error);
+    res.status(500).json({ message: 'Could not clear cart' });
+  }
 };

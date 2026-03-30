@@ -5,6 +5,29 @@ import { toast } from 'react-hot-toast';
 
 const WishlistContext = createContext();
 
+const normalizeWishlistItem = (item) => {
+  const product =
+    item.product ||
+    (item.productId && typeof item.productId === 'object' ? item.productId : null);
+
+  return {
+    ...item,
+    product,
+  };
+};
+
+const getWishlistProductId = (item) => {
+  if (item.product?._id) {
+    return item.product._id;
+  }
+
+  if (typeof item.productId === 'string') {
+    return item.productId;
+  }
+
+  return item.productId?._id || null;
+};
+
 export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
   const { user } = useUser();
@@ -19,7 +42,7 @@ export const WishlistProvider = ({ children }) => {
         }
 
         const res = await api.get('/wishlist');
-        setWishlist(res.data);
+        setWishlist(res.data.map(normalizeWishlistItem));
 
       } catch (err) {
         console.error('Failed to fetch wishlist', err);
@@ -31,9 +54,7 @@ export const WishlistProvider = ({ children }) => {
 
   // ✅ check item
   const isInWishlist = (productId) => {
-    return wishlist.some(
-      (item) => item.productId === productId || item.product?._id === productId
-    );
+    return wishlist.some((item) => getWishlistProductId(item) === productId);
   };
 
   // ✅ toggle wishlist
@@ -43,9 +64,8 @@ export const WishlistProvider = ({ children }) => {
       return;
     }
 
-    const exists = wishlist.find(
-      (item) => item.productId === product._id
-    );
+    const productId = product._id || product.id;
+    const exists = wishlist.find((item) => getWishlistProductId(item) === productId);
 
     try {
       if (exists) {
@@ -61,10 +81,10 @@ export const WishlistProvider = ({ children }) => {
       } else {
         // ✅ add
         const res = await api.post('/wishlist', {
-          productId: product._id,
+          productId,
         });
 
-        setWishlist((prev) => [...prev, res.data]);
+        setWishlist((prev) => [...prev, normalizeWishlistItem(res.data)]);
 
         toast.success('Added to wishlist');
       }

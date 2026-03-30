@@ -61,12 +61,6 @@ function Login() {
             Register
           </Link>
         </p>
-
-        <p className={loginStyles.footerText}>
-          <Link to="/admin/login" className={loginStyles.registerLink}>
-            Admin Login
-          </Link>
-        </p>
       </div>
     </div>
   );
