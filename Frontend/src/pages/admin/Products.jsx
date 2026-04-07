@@ -1,8 +1,52 @@
 import { useState, useEffect } from 'react';
 import SideBar from './SideBar';
 import { useStats } from '../../context/StatsContext';
-import api from '../../service/api';
 import { toast } from 'react-hot-toast';
+import { createProduct, updateProduct } from '../../service/productService';
+import { adminProductsStyles, adminShellStyles } from './Tailwind/AdminTailwind';
+
+const createEmptyProduct = () => ({
+  name: '',
+  img: '',
+  price: '',
+  description: '',
+  smallDes: '',
+  category: '',
+  isActive: true,
+});
+
+const productFields = [
+  'name',
+  'img',
+  'price',
+  'description',
+  'smallDes',
+  'category',
+  'isActive',
+  'rent',
+];
+
+const buildProductFormData = (product, imageFile) => {
+  const formData = new FormData();
+
+  productFields.forEach((field) => {
+    if (field === 'img' && imageFile) {
+      return;
+    }
+
+    const value = product[field];
+
+    if (value !== undefined && value !== null && value !== '') {
+      formData.append(field, value);
+    }
+  });
+
+  if (imageFile) {
+    formData.append('img', imageFile);
+  }
+
+  return formData;
+};
 
 function Products() {
   const { stats } = useStats();
@@ -10,24 +54,10 @@ function Products() {
   const [open, setOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
 
-  const [newProduct, setNewProduct] = useState({
-    name: '',
-    img: '',
-    price: '',
-    description: '',
-    smallDes: '',
-    category: '',
-    isActive: true,
-  });
-  const [selectedProduct, setSelectedProduct] = useState({
-    name: '',
-    img: '',
-    price: '',
-    description: '',
-    smallDes: '',
-    category: '',
-    isActive: true,
-  });
+  const [newProduct, setNewProduct] = useState(createEmptyProduct);
+  const [selectedProduct, setSelectedProduct] = useState(createEmptyProduct);
+  const [newImageFile, setNewImageFile] = useState(null);
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
 
   useEffect(() => {
     if (stats.product) {
@@ -36,10 +66,32 @@ function Products() {
   }, [stats.product]);
 
   const handleInputChange = (e) => {
-    setSelectedProduct({
-      ...selectedProduct,
-      [e.target.name]: e.target.value,
-    });
+    setSelectedProduct({ ...selectedProduct, [e.target.name]: e.target.value });
+  };
+
+  const handleNewProductChange = (e) => {
+    setNewProduct({ ...newProduct, [e.target.name]: e.target.value });
+  };
+
+  const handleNewImageChange = (e) => {
+    const file = e.target.files?.[0] || null;
+    setNewImageFile(file);
+  };
+
+  const handleSelectedImageChange = (e) => {
+    const file = e.target.files?.[0] || null;
+    setSelectedImageFile(file);
+  };
+
+  const closeAddModal = () => {
+    setIsAddOpen(false);
+    setNewProduct(createEmptyProduct());
+    setNewImageFile(null);
+  };
+
+  const closeEditModal = () => {
+    setOpen(false);
+    setSelectedImageFile(null);
   };
 
   const handleActivate = async (productID) => {
@@ -48,15 +100,11 @@ function Products() {
       if (!currentProduct) return;
 
       const updatedStatus = !currentProduct.isActive;
-      await api.patch(`/products/${productID}`, {
-        isActive: updatedStatus,
-      });
+      await updateProduct(productID, { isActive: updatedStatus });
 
       setProducts((prev) =>
         prev.map((item) =>
-          (item._id || item.id) === productID
-            ? { ...item, isActive: updatedStatus }
-            : item,
+          (item._id || item.id) === productID ? { ...item, isActive: updatedStatus } : item,
         ),
       );
       toast.success(`Product Details Updated`);
@@ -65,19 +113,20 @@ function Products() {
 
   const handleEdit = async () => {
     try {
-      const res = await api.patch(
-        `/products/${selectedProduct._id || selectedProduct.id}`,
-        selectedProduct,
+      const payload = buildProductFormData(selectedProduct, selectedImageFile);
+      const updatedProduct = await updateProduct(
+        selectedProduct._id || selectedProduct.id,
+        payload,
       );
 
       setProducts((prev) =>
         prev.map((item) =>
           (item._id || item.id) === (selectedProduct._id || selectedProduct.id)
-            ? res.data
+            ? updatedProduct
             : item,
         ),
       );
-      setOpen(false);
+      closeEditModal();
       toast.success(`Product Details Updated`);
     } catch (error) {
       console.log(error);
@@ -86,19 +135,16 @@ function Products() {
 
   const handleAdd = async () => {
     try {
-      const res = await api.post(`/products`, newProduct);
+      if (!newImageFile) {
+        toast.error(`Please select a product image`);
+        return;
+      }
 
-      setProducts((prev) => [...prev, res.data]);
-      setNewProduct({
-        name: '',
-        img: '',
-        price: '',
-        description: '',
-        smallDes: '',
-        category: '',
-        isActive: true,
-      });
-      setIsAddOpen(false);
+      const payload = buildProductFormData(newProduct, newImageFile);
+      const createdProduct = await createProduct(payload);
+
+      setProducts((prev) => [...prev, createdProduct]);
+      closeAddModal();
       toast.success(`Product Added Succesfully`);
     } catch (error) {
       console.log(error);
@@ -107,69 +153,60 @@ function Products() {
 
   return (
     <>
-      <div className="min-h-screen bg-slate-900 text-slate-200 flex relative">
+      <div className={adminShellStyles.page}>
         <SideBar />
 
-        <div className="flex-1 min-h-screen bg-[#0f172a] p-8 text-white">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold">All Products</h1>
+        <div className={adminProductsStyles.content}>
+          <div className={adminProductsStyles.header}>
+            <h1 className={adminProductsStyles.title}>All Products</h1>
             <button
-              onClick={() => setIsAddOpen(true)}
-              className="bg-cyan-500 hover:bg-cyan-600 px-5 py-2 rounded-xl font-semibold transition"
+              onClick={() => {
+                setNewProduct(createEmptyProduct());
+                setNewImageFile(null);
+                setIsAddOpen(true);
+              }}
+              className={adminProductsStyles.addButton}
             >
               + Add Product
-            </button>{' '}
+            </button>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className={adminProductsStyles.grid}>
             {products.map((item) => (
-              <div
-                key={item._id || item.id}
-                className="bg-slate-800 rounded-2xl shadow-lg p-6 border border-slate-700/50 hover:scale-[1.02] transition"
-              >
-                <div className="h-48 w-full bg-slate-700 relative overflow-hidden group">
-                  <img
-                    src={item.img}
-                    alt={item.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
+              <div key={item._id || item.id} className={adminProductsStyles.card}>
+                <div className={adminProductsStyles.imageWrap}>
+                  <img src={item.img} alt={item.name} className={adminProductsStyles.image} />
                 </div>
-                <div className="flex justify-between my-3 items-start mb-4">
+                <div className={adminProductsStyles.metaRow}>
                   <div>
-                    <h2 className="text-xl font-bold text-cyan-400">
-                      {item.name}
-                    </h2>
-                    <p className="text-sm text-slate-400">
+                    <h2 className={adminProductsStyles.name}>{item.name}</h2>
+                    <p className={adminProductsStyles.productId}>
                       Product ID: {item._id || item.id}
                     </p>
                   </div>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${item.isActive ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}
-                  >
+                  <span className={adminProductsStyles.statusBadge(item.isActive)}>
                     {item.isActive ? 'Active' : 'Inactive'}
                   </span>
                 </div>
 
-                <div className="space-y-2 text-sm text-slate-300">
+                <div className={adminProductsStyles.details}>
                   <p>
-                    <span className="font-semibold text-slate-400">Price:</span>{' '}
-                    ₹{item.price}
+                    <span className={adminProductsStyles.detailLabel}>Price:</span> ₹{item.price}
                   </p>
                   <p>
-                    <span className="font-semibold text-slate-400">
-                      Category:
-                    </span>{' '}
+                    <span className={adminProductsStyles.detailLabel}>Category:</span>{' '}
                     {item.category}
                   </p>
                 </div>
 
-                <div className="mt-5 flex justify-between">
+                <div className={adminProductsStyles.actionRow}>
                   <button
                     onClick={() => {
                       setSelectedProduct(item);
+                      setSelectedImageFile(null);
                       setOpen(true);
                     }}
-                    className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded-lg text-sm font-semibold"
+                    className={adminProductsStyles.editButton}
                   >
                     Edit
                   </button>
@@ -178,7 +215,7 @@ function Products() {
                     onClick={() => {
                       handleActivate(item._id || item.id);
                     }}
-                    className="bg-cyan-500 hover:bg-cyan-600 px-4 py-2 rounded-lg text-sm font-semibold"
+                    className={adminProductsStyles.toggleButton}
                   >
                     {item.isActive ? 'Deactivate' : 'Activate'}
                   </button>
@@ -189,84 +226,100 @@ function Products() {
         </div>
 
         {open && (
-          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-            <div className="bg-slate-900 w-[650px] max-w-full rounded-2xl shadow-2xl p-8 relative border border-slate-700 overflow-y-auto max-h-[90vh]">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-cyan-400">
-                  EDIT PRODUCT
-                </h2>
-                <button
-                  onClick={() => setOpen(false)}
-                  className="text-slate-400 hover:text-red-400 text-xl"
-                >
+          <div className={adminProductsStyles.modalOverlay}>
+            <div className={adminProductsStyles.modalCard}>
+              <div className={adminProductsStyles.modalHeader}>
+                <h2 className={adminProductsStyles.modalTitle}>EDIT PRODUCT</h2>
+                <button onClick={closeEditModal} className={adminProductsStyles.modalClose}>
                   ✕
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2">
-                  <label className="text-xs text-slate-400">Product Name</label>
+              <div className={adminProductsStyles.formGrid}>
+                <div className={adminProductsStyles.span2}>
+                  <label className={adminProductsStyles.label}>Product Name</label>
                   <input
                     type="text"
                     name="name"
                     value={selectedProduct.name}
                     onChange={handleInputChange}
-                    className="w-full mt-1 p-3 bg-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-cyan-500 text-white"
+                    className={adminProductsStyles.input}
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs text-slate-400">Price</label>
+                  <label className={adminProductsStyles.label}>Price</label>
                   <input
                     type="number"
                     name="price"
                     value={selectedProduct.price}
                     onChange={handleInputChange}
-                    className="w-full mt-1 p-3 bg-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-cyan-500 text-white"
+                    className={adminProductsStyles.input}
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs text-slate-400">Category</label>
+                  <label className={adminProductsStyles.label}>Category</label>
                   <select
                     name="category"
                     value={selectedProduct.category}
                     onChange={handleInputChange}
-                    className="w-full mt-1 p-3 bg-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-cyan-500 text-white"
+                    className={adminProductsStyles.select}
                   >
-                    <option value="acer">Acer</option>
-                    <option value="dell">Dell</option>
-                    <option value="asus">Asus</option>
-                    <option value="lenovo">Lenovo</option>
+                    <option value="">Select category</option>
+                    <option value="Acer">Acer</option>
+                    <option value="Dell">Dell</option>
+                    <option value="Asus">Asus</option>
+                    <option value="Lenovo">Lenovo</option>
                   </select>
                 </div>
 
-                <div className="col-span-2">
-                  <label className="text-xs text-slate-400">Image URL</label>
+                <div className={adminProductsStyles.span2}>
+                  <label className={adminProductsStyles.label}>Product Image</label>
                   <input
-                    type="text"
-                    name="img"
-                    value={selectedProduct.img}
-                    onChange={handleInputChange}
-                    className="w-full mt-1 p-3 bg-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-cyan-500 text-white"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleSelectedImageChange}
+                    className={adminProductsStyles.input}
                   />
+                  <p className={adminProductsStyles.productId}>
+                    Leave this empty to keep the current image.
+                  </p>
+                  {selectedProduct.img && (
+                    <img
+                      src={selectedProduct.img}
+                      alt={selectedProduct.name}
+                      className={adminProductsStyles.image}
+                    />
+                  )}
                 </div>
 
-                <div className="col-span-2">
-                  <label className="text-xs text-slate-400">Description</label>
+                <div className={adminProductsStyles.span2}>
+                  <label className={adminProductsStyles.label}>Small Description</label>
+                  <textarea
+                    rows="2"
+                    name="smallDes"
+                    value={selectedProduct.smallDes}
+                    onChange={handleInputChange}
+                    className={adminProductsStyles.textarea}
+                  ></textarea>
+                </div>
+
+                <div className={adminProductsStyles.span2}>
+                  <label className={adminProductsStyles.label}>Description</label>
                   <textarea
                     rows="4"
                     name="description"
                     value={selectedProduct.description}
                     onChange={handleInputChange}
-                    className="w-full mt-1 p-3 bg-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-cyan-500 text-white"
+                    className={adminProductsStyles.textarea}
                   ></textarea>
                 </div>
               </div>
 
-              <div className="flex justify-end gap-4 mt-8">
+              <div className={adminProductsStyles.modalActions}>
                 <button
-                  className="bg-cyan-500 hover:bg-cyan-600 px-6 py-2 rounded-lg font-semibold text-white"
+                  className={adminProductsStyles.primaryButton}
                   onClick={() => {
                     handleEdit();
                   }}
@@ -279,54 +332,49 @@ function Products() {
         )}
 
         {isAddOpen && (
-          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-            <div className="bg-slate-900 w-[650px] max-w-full rounded-2xl shadow-2xl p-8 relative border border-slate-700 overflow-y-auto max-h-[90vh]">
-              {/* HEADER */}
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-cyan-400">
-                  ADD NEW PRODUCT
-                </h2>
-                <button
-                  onClick={() => setIsAddOpen(false)}
-                  className="text-slate-400 hover:text-red-400 text-xl"
-                >
+          <div className={adminProductsStyles.modalOverlay}>
+            <div className={adminProductsStyles.modalCard}>
+              <div className={adminProductsStyles.modalHeader}>
+                <h2 className={adminProductsStyles.modalTitle}>ADD NEW PRODUCT</h2>
+                <button onClick={closeAddModal} className={adminProductsStyles.modalClose}>
                   ✕
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2">
-                  <label className="text-xs text-slate-400">Product Name</label>
+              <div className={adminProductsStyles.formGrid}>
+                <div className={adminProductsStyles.span2}>
+                  <label className={adminProductsStyles.label}>Product Name</label>
                   <input
                     type="text"
+                    name="name"
                     placeholder="Enter product name"
-                    className="w-full mt-1 p-3 bg-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-cyan-500 text-white"
-                    onChange={(e) =>
-                      setNewProduct({ ...newProduct, name: e.target.value })
-                    }
+                    className={adminProductsStyles.input}
+                    value={newProduct.name}
+                    onChange={handleNewProductChange}
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs text-slate-400">Price</label>
+                  <label className={adminProductsStyles.label}>Price</label>
                   <input
                     type="number"
+                    name="price"
                     placeholder="0.00"
-                    className="w-full mt-1 p-3 bg-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-cyan-500 text-white"
-                    onChange={(e) =>
-                      setNewProduct({ ...newProduct, price: e.target.value })
-                    }
+                    className={adminProductsStyles.input}
+                    value={newProduct.price}
+                    onChange={handleNewProductChange}
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs text-slate-400">Category</label>
+                  <label className={adminProductsStyles.label}>Category</label>
                   <select
-                    className="w-full mt-1 p-3 bg-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-cyan-500 text-white"
-                    onChange={(e) =>
-                      setNewProduct({ ...newProduct, category: e.target.value })
-                    }
+                    name="category"
+                    className={adminProductsStyles.select}
+                    value={newProduct.category}
+                    onChange={handleNewProductChange}
                   >
+                    <option value="">Select category</option>
                     <option value="Acer">Acer</option>
                     <option value="Dell">Dell</option>
                     <option value="Asus">Asus</option>
@@ -334,61 +382,52 @@ function Products() {
                   </select>
                 </div>
 
-                <div className="col-span-2">
-                  <label className="text-xs text-slate-400">
-                    Product Image
-                  </label>
+                <div className={adminProductsStyles.span2}>
+                  <label className={adminProductsStyles.label}>Product Image</label>
                   <input
-                    type="text"
-                    onChange={(e) =>
-                      setNewProduct({ ...newProduct, img: e.target.value })
-                    }
-                    className="w-full mt-1 p-3 bg-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-cyan-500 text-white"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleNewImageChange}
+                    className={adminProductsStyles.input}
                   />
+                  {newImageFile && (
+                    <p className={adminProductsStyles.productId}>
+                      Selected file: {newImageFile.name}
+                    </p>
+                  )}
                 </div>
 
-                <div className="col-span-2">
-                  <label className="text-xs text-slate-400">
-                    Small Description
-                  </label>
+                <div className={adminProductsStyles.span2}>
+                  <label className={adminProductsStyles.label}>Small Description</label>
                   <textarea
                     rows="2"
+                    name="smallDes"
                     placeholder="Tell us samll about the product..."
-                    className="w-full mt-1 p-3 bg-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-cyan-500 text-white"
-                    onChange={(e) =>
-                      setNewProduct({
-                        ...newProduct,
-                        smallDes: e.target.value,
-                      })
-                    }
+                    className={adminProductsStyles.textarea}
+                    value={newProduct.smallDes}
+                    onChange={handleNewProductChange}
                   ></textarea>
                 </div>
 
-                <div className="col-span-2">
-                  <label className="text-xs text-slate-400">Description</label>
+                <div className={adminProductsStyles.span2}>
+                  <label className={adminProductsStyles.label}>Description</label>
                   <textarea
                     rows="4"
+                    name="description"
                     placeholder="Tell us about the product..."
-                    className="w-full mt-1 p-3 bg-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-cyan-500 text-white"
-                    onChange={(e) =>
-                      setNewProduct({
-                        ...newProduct,
-                        description: e.target.value,
-                      })
-                    }
+                    className={adminProductsStyles.textarea}
+                    value={newProduct.description}
+                    onChange={handleNewProductChange}
                   ></textarea>
                 </div>
               </div>
 
-              <div className="flex justify-end gap-4 mt-8">
-                <button
-                  onClick={() => setIsAddOpen(false)}
-                  className="bg-slate-700 hover:bg-slate-600 px-6 py-2 rounded-lg font-semibold text-white transition"
-                >
+              <div className={adminProductsStyles.modalActions}>
+                <button onClick={closeAddModal} className={adminProductsStyles.secondaryButton}>
                   Cancel
                 </button>
                 <button
-                  className="bg-cyan-500 hover:bg-cyan-600 px-6 py-2 rounded-lg font-semibold text-white shadow-lg shadow-cyan-500/20 transition"
+                  className={adminProductsStyles.createButton}
                   onClick={() => {
                     handleAdd();
                   }}

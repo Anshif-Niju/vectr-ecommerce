@@ -1,19 +1,15 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import api from '../service/api';
 import { useUser } from '../context/UserContext';
 import { toast } from 'react-hot-toast';
+import { addToWishlist, getWishlist, removeFromWishlist } from '../service/wishlistService';
 
 const WishlistContext = createContext();
 
 const normalizeWishlistItem = (item) => {
   const product =
-    item.product ||
-    (item.productId && typeof item.productId === 'object' ? item.productId : null);
+    item.product || (item.productId && typeof item.productId === 'object' ? item.productId : null);
 
-  return {
-    ...item,
-    product,
-  };
+  return { ...item, product };
 };
 
 const getWishlistProductId = (item) => {
@@ -41,9 +37,8 @@ export const WishlistProvider = ({ children }) => {
           return;
         }
 
-        const res = await api.get('/wishlist');
-        setWishlist(res.data.map(normalizeWishlistItem));
-
+        const items = await getWishlist();
+        setWishlist(items.map(normalizeWishlistItem));
       } catch (err) {
         console.error('Failed to fetch wishlist', err);
       }
@@ -70,25 +65,19 @@ export const WishlistProvider = ({ children }) => {
     try {
       if (exists) {
         // ❌ remove
-        await api.delete(`/wishlist/${exists._id}`);
+        await removeFromWishlist(exists._id);
 
-        setWishlist((prev) =>
-          prev.filter((item) => item._id !== exists._id)
-        );
+        setWishlist((prev) => prev.filter((item) => item._id !== exists._id));
 
         toast.success('Removed from wishlist');
-
       } else {
         // ✅ add
-        const res = await api.post('/wishlist', {
-          productId,
-        });
+        const wishlistItem = await addToWishlist(productId);
 
-        setWishlist((prev) => [...prev, normalizeWishlistItem(res.data)]);
+        setWishlist((prev) => [...prev, normalizeWishlistItem(wishlistItem)]);
 
         toast.success('Added to wishlist');
       }
-
     } catch (err) {
       console.error('Error toggling wishlist', err);
     }
@@ -97,9 +86,7 @@ export const WishlistProvider = ({ children }) => {
   const wishlistLength = wishlist.length;
 
   return (
-    <WishlistContext.Provider
-      value={{ wishlist, toggleWishlist, isInWishlist, wishlistLength }}
-    >
+    <WishlistContext.Provider value={{ wishlist, toggleWishlist, isInWishlist, wishlistLength }}>
       {children}
     </WishlistContext.Provider>
   );

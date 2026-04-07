@@ -23,12 +23,7 @@ function CartCard({ id, item, quantity }) {
   return (
     <div className={cartCardStyles.wrapper}>
       <div className={cartCardStyles.cardContainer}>
-        <img
-          src={item.img}
-          className={cartCardStyles.image}
-          loading="lazy"
-          alt={item.name}
-        />
+        <img src={item.img} className={cartCardStyles.image} loading="lazy" alt={item.name} />
 
         <div className={cartCardStyles.contentArea}>
           <h2 className={cartCardStyles.title}>{item.name}</h2>
@@ -38,19 +33,13 @@ function CartCard({ id, item, quantity }) {
             <span className={cartCardStyles.priceText}>{item.price}</span>
 
             <div className={cartCardStyles.qtyControl}>
-              <button
-                className={cartCardStyles.qtyBtn}
-                onClick={() => changeProductSize(-1)}
-              >
+              <button className={cartCardStyles.qtyBtn} onClick={() => changeProductSize(-1)}>
                 -
               </button>
 
               <span className={cartCardStyles.qtyValue}>{quantity}</span>
 
-              <button
-                className={cartCardStyles.qtyBtn}
-                onClick={() => changeProductSize(1)}
-              >
+              <button className={cartCardStyles.qtyBtn} onClick={() => changeProductSize(1)}>
                 +
               </button>
 

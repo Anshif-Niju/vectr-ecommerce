@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import api from '../service/api';
+import { clearAuthToken, getCurrentUser } from '../service/sessionService';
 
 const UserContext = createContext();
 
@@ -13,25 +13,17 @@ export const UserProvider = ({ children }) => {
 
       if (!token) {
         setUser(null);
-        sessionStorage.removeItem('user');
         setLoading(false);
         return;
       }
 
       try {
-        const normalizedToken = token.replace(/^Bearer\s+/i, '').trim();
-        const res = await api.get('/users/me', {
-          headers: {
-            Authorization: `Bearer ${normalizedToken}`,
-          },
-        });
-        setUser(res.data);
-        sessionStorage.setItem('user', JSON.stringify(res.data));
+        const currentUser = await getCurrentUser(token);
+        setUser(currentUser);
       } catch (error) {
         console.log('Auth failed', error);
-        localStorage.removeItem('token');
+        clearAuthToken();
         setUser(null);
-        sessionStorage.removeItem('user');
       } finally {
         setLoading(false);
       }
@@ -41,8 +33,7 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   const logout = () => {
-    localStorage.removeItem('token');
-    sessionStorage.removeItem('user');
+    clearAuthToken();
     setUser(null);
   };
 

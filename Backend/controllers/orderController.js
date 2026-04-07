@@ -2,20 +2,11 @@ import Order from '../models/Order.js';
 import Cart from '../models/Cart.js';
 import mongoose from 'mongoose';
 
-const allowedOrderStatuses = [
-  'Processing',
-  'Delivery Soon',
-  'Delivery Today',
-  'Delivery Completed',
-];
-
 export const createOrder = async (req, res, next) => {
   try {
     const { address, paymentMethod } = req.body;
 
-    const cartItems = await Cart.find({
-      userId: req.user._id,
-    }).populate('productId');
+    const cartItems = await Cart.find({ userId: req.user._id }).populate('productId');
 
     if (cartItems.length === 0) {
       return res.status(400).json({ message: 'Cart is empty' });
@@ -48,9 +39,7 @@ export const createOrder = async (req, res, next) => {
 
 export const getMyOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find({
-      userId: req.user._id,
-    })
+    const orders = await Order.find({ userId: req.user._id })
       .populate('products.productId')
       .sort({ createdAt: -1 });
 
@@ -82,17 +71,7 @@ export const updateOrderStatus = async (req, res, next) => {
       return res.status(400).json({ message: 'Invalid order id' });
     }
 
-    if (!allowedOrderStatuses.includes(status)) {
-      return res.status(400).json({
-        message: 'Invalid order status',
-      });
-    }
-
-    const order = await Order.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true, runValidators: true },
-    )
+    const order = await Order.findByIdAndUpdate(id, { status }, { new: true, runValidators: true })
       .populate('products.productId')
       .populate('userId', 'username email');
 

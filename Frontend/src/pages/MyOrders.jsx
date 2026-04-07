@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useUser } from '../context/UserContext';
-import api from '../service/api';
 import { orderStyles } from './Tailwind/Tailwind';
 import { getOrderStatusClasses } from '../utils/orderStatus';
+import { getMyOrders as fetchMyOrders } from '../service/orderService';
 
 function MyOrders() {
   const [orders, setOrders] = useState([]);
@@ -16,8 +16,8 @@ function MyOrders() {
 
     const fetchOrders = async () => {
       try {
-        const res = await api.get('/orders/my');
-        setOrders(res.data);
+        const userOrders = await fetchMyOrders();
+        setOrders(userOrders);
       } catch (error) {
         console.log('Error fetching orders:', error);
       }
@@ -93,12 +93,8 @@ function MyOrders() {
                   />
 
                   <div className="flex-1">
-                    <h3 className={orderStyles.productName}>
-                      {item.productId?.name}
-                    </h3>
-                    <p className={orderStyles.productQty}>
-                      Quantity: {item.quantity}
-                    </p>
+                    <h3 className={orderStyles.productName}>{item.productId?.name}</h3>
+                    <p className={orderStyles.productQty}>Quantity: {item.quantity}</p>
                   </div>
 
                   <p className={orderStyles.value}>

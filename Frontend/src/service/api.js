@@ -1,15 +1,13 @@
-// Frontend/src/service/api.js  ← THIS FILE IS MISSING/BROKEN
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: 'http://localhost:4000/api',
-});
+const apiOrigin = (import.meta.env.VITE_API_URL || 'http://localhost:4000').replace(/\/+$/, '');
+const baseURL = apiOrigin.endsWith('/api') ? apiOrigin : `${apiOrigin}/api`;
 
-// Frontend/src/service/api.js
+const api = axios.create({ baseURL });
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
-    // Ensure we SEND it with the Bearer prefix
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;

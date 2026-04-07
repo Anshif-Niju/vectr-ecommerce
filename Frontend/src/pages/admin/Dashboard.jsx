@@ -2,15 +2,8 @@ import { useState } from 'react';
 import { useStats } from '../../context/StatsContext';
 import SideBar from './SideBar';
 import { getOrderStatusClasses } from '../../utils/orderStatus';
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { adminDashboardStyles, adminShellStyles } from './Tailwind/AdminTailwind';
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, YAxis } from 'recharts';
 
 function Dashboard() {
   const { stats } = useStats();
@@ -24,61 +17,46 @@ function Dashboard() {
     }, 0);
   };
 
-  const graphData = stats.orders.slice(-5).map((order, index) => ({
-    revenue: order.totalPrice ?? totalPrice(order.products),
-  }));
+  const graphData = stats.orders
+    .slice(-5)
+    .map((order) => ({ revenue: order.totalPrice ?? totalPrice(order.products) }));
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-200 flex relative">
+    <div className={adminShellStyles.page}>
       <SideBar open={open} setOpen={setOpen} />
 
-      <main className="flex-1 p-6 md:p-8 w-full overflow-y-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center gap-4">
-            <button
-              className="md:hidden text-white text-3xl hover:text-cyan-400 transition"
-              onClick={() => setOpen(true)}
-            >
+      <main className={adminShellStyles.main}>
+        <div className={adminDashboardStyles.header}>
+          <div className={adminDashboardStyles.headerLeft}>
+            <button className={adminDashboardStyles.menuButton} onClick={() => setOpen(true)}>
               Menu
             </button>
-            <h2 className="text-3xl font-semibold text-white">
-              Dashboard Overview
-            </h2>
+            <h2 className={adminDashboardStyles.title}>Dashboard Overview</h2>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-          <div className="bg-slate-800 p-6 rounded-xl shadow border border-slate-700">
-            <h3 className="text-sm text-slate-400">Total Users</h3>
-            <p className="text-3xl font-bold mt-2 text-white">
-              {stats.totalUsers}
-            </p>
+        <div className={adminDashboardStyles.statsGrid}>
+          <div className={adminDashboardStyles.statCard}>
+            <h3 className={adminDashboardStyles.statLabel}>Total Users</h3>
+            <p className={adminDashboardStyles.statValue}>{stats.totalUsers}</p>
           </div>
-          <div className="bg-slate-800 p-6 rounded-xl shadow border border-slate-700">
-            <h3 className="text-sm text-slate-400">Orders</h3>
-            <p className="text-3xl font-bold mt-2 text-white">
-              {stats.totalOrders}
-            </p>
+          <div className={adminDashboardStyles.statCard}>
+            <h3 className={adminDashboardStyles.statLabel}>Orders</h3>
+            <p className={adminDashboardStyles.statValue}>{stats.totalOrders}</p>
           </div>
-          <div className="bg-slate-800 p-6 rounded-xl shadow border border-slate-700">
-            <h3 className="text-sm text-slate-400">Revenue</h3>
-            <p className="text-3xl font-bold mt-2 text-green-400">
-              Rs.{stats.totalRevenue}
-            </p>
+          <div className={adminDashboardStyles.statCard}>
+            <h3 className={adminDashboardStyles.statLabel}>Revenue</h3>
+            <p className={adminDashboardStyles.statValueRevenue}>Rs.{stats.totalRevenue}</p>
           </div>
-          <div className="bg-slate-800 p-6 rounded-xl shadow border border-slate-700">
-            <h3 className="text-sm text-slate-400">Products</h3>
-            <p className="text-3xl font-bold mt-2 text-white">
-              {stats.totalProducts}
-            </p>
+          <div className={adminDashboardStyles.statCard}>
+            <h3 className={adminDashboardStyles.statLabel}>Products</h3>
+            <p className={adminDashboardStyles.statValue}>{stats.totalProducts}</p>
           </div>
         </div>
 
-        <div className="bg-slate-800 p-6 rounded-xl shadow mb-10 border border-slate-700">
-          <h3 className="text-xl font-semibold mb-6 text-white">
-            Revenue Analytics
-          </h3>
-          <div className="h-[300px] w-full">
+        <div className={adminDashboardStyles.chartCard}>
+          <h3 className={adminDashboardStyles.chartTitle}>Revenue Analytics</h3>
+          <div className={adminDashboardStyles.chartWrapper}>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={graphData}>
                 <defs>
@@ -87,11 +65,7 @@ function Dashboard() {
                     <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="#334155"
-                  vertical={false}
-                />
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
                 <YAxis
                   stroke="#94a3b8"
                   fontSize={12}
@@ -100,13 +74,8 @@ function Dashboard() {
                   tickFormatter={(value) => `Rs.${value}`}
                 />
                 <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#1e293b',
-                    border: 'none',
-                    borderRadius: '8px',
-                    color: '#fff',
-                  }}
-                  itemStyle={{ color: '#22d3ee' }}
+                  contentStyle={adminDashboardStyles.tooltipContent}
+                  itemStyle={adminDashboardStyles.tooltipItem}
                 />
                 <Area
                   type="monotone"
@@ -121,14 +90,12 @@ function Dashboard() {
           </div>
         </div>
 
-        <div className="bg-slate-800 rounded-xl shadow p-6 overflow-x-auto border border-slate-700">
-          <h3 className="text-xl font-semibold mb-4 text-white">
-            Recent Orders
-          </h3>
-          <table className="w-full text-left min-w-[600px]">
+        <div className={adminDashboardStyles.tableWrapper}>
+          <h3 className={adminShellStyles.sectionTitle}>Recent Orders</h3>
+          <table className={adminDashboardStyles.table}>
             <thead>
-              <tr className="text-slate-400 border-b border-slate-700">
-                <th className="py-3">Order ID</th>
+              <tr className={adminDashboardStyles.tableHeadRow}>
+                <th className={adminDashboardStyles.tableHeadCell}>Order ID</th>
                 <th>User</th>
                 <th>Status</th>
                 <th>Date</th>
@@ -138,28 +105,19 @@ function Dashboard() {
             </thead>
             <tbody>
               {recentOrders.map((item) => (
-                <tr
-                  key={item._id || item.id}
-                  className="border-b border-slate-700 hover:bg-slate-700/50 transition"
-                >
-                  <td className="py-3 font-mono text-cyan-400">
-                    {item._id || item.id}
-                  </td>
+                <tr key={item._id || item.id} className={adminDashboardStyles.tableRow}>
+                  <td className={adminDashboardStyles.orderIdCell}>{item._id || item.id}</td>
                   <td>{item.userId?.username || item.address?.name}</td>
                   <td>
                     <span
-                      className={`px-3 py-1 rounded-full text-xs ${getOrderStatusClasses(item.status)}`}
+                      className={`${adminDashboardStyles.statusBadgeBase} ${getOrderStatusClasses(item.status)}`}
                     >
                       {item.status}
                     </span>
                   </td>
-                  <td>
-                    {item.orderDate
-                      ? new Date(item.orderDate).toLocaleDateString()
-                      : 'N/A'}
-                  </td>
-                  <td className="capitalize">{item.paymentMethod}</td>
-                  <td className="font-bold">
+                  <td>{item.orderDate ? new Date(item.orderDate).toLocaleDateString() : 'N/A'}</td>
+                  <td className={adminDashboardStyles.paymentCell}>{item.paymentMethod}</td>
+                  <td className={adminDashboardStyles.amountCell}>
                     Rs.{item.totalPrice ?? totalPrice(item.products)}
                   </td>
                 </tr>

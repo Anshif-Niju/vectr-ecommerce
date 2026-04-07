@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import api from '../service/api';
 import { useUser } from '../context/UserContext';
 import { toast } from 'react-hot-toast';
+import { addToCart, clearCartItems, getCart, removeFromCart } from '../service/cartService';
 
 const CartContext = createContext();
 
@@ -18,13 +18,10 @@ export const CartProvider = ({ children }) => {
           return;
         }
 
-        const res = await api.get('/cart');
-        setCart(res.data);
+        const cartItems = await getCart();
+        setCart(cartItems);
       } catch (error) {
-        console.error(
-          'Cart fetch error',
-          error.response?.data || error.message,
-        );
+        console.error('Cart fetch error', error.response?.data || error.message);
         setCart([]);
       }
     };
@@ -41,12 +38,9 @@ export const CartProvider = ({ children }) => {
     }
 
     try {
-      const res = await api.post('/cart', {
-        productId: product._id || product.id,
-        quantity: qty,
-      });
+      const updatedCart = await addToCart({ productId: product._id || product.id, quantity: qty });
 
-      setCart(res.data); // backend returns updated cart
+      setCart(updatedCart);
       toast.success('Added to cart');
     } catch (error) {
       console.log(error);
@@ -57,8 +51,8 @@ export const CartProvider = ({ children }) => {
   // ✅ REMOVE SINGLE ITEM
   const removeCart = async (cartId) => {
     try {
-      const res = await api.delete(`/cart/${cartId}`);
-      setCart(res.data); // updated cart
+      const updatedCart = await removeFromCart(cartId);
+      setCart(updatedCart);
 
       toast.success('Item removed');
     } catch (error) {
@@ -69,7 +63,7 @@ export const CartProvider = ({ children }) => {
   // ✅ CLEAR CART
   const clearCart = async () => {
     try {
-      await api.delete('/cart/clear');
+      await clearCartItems();
       setCart([]);
 
       toast.success('Cart cleared');
@@ -96,15 +90,7 @@ export const CartProvider = ({ children }) => {
 
   return (
     <CartContext.Provider
-      value={{
-        cart,
-        cartLength,
-        totalPrice,
-        delivery,
-        addProduct,
-        removeCart,
-        clearCart,
-      }}
+      value={{ cart, cartLength, totalPrice, delivery, addProduct, removeCart, clearCart }}
     >
       {children}
     </CartContext.Provider>

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from '../service/api';
 import WishlistButton from '../components/WishlistButton';
 import AddCart from '../components/AddCartButton';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { productStyles } from './Tailwind/Tailwind';
+import { getProductById } from '../service/productService';
 
 function ProductDetails() {
   const navigate = useNavigate();
@@ -19,8 +19,8 @@ function ProductDetails() {
   useEffect(() => {
     const fetchSingleItem = async () => {
       try {
-        const res = await api.get(`/products/${id}`);
-        setProduct(res.data);
+        const item = await getProductById(id);
+        setProduct(item);
       } catch (error) {
         console.log(error);
       } finally {
@@ -34,9 +34,7 @@ function ProductDetails() {
     return (
       <div className="min-h-screen bg-[#F1FAEE] flex flex-col items-center justify-center">
         <div className="w-16 h-16 border-4 border-[#457b9d] border-t-transparent rounded-full animate-spin mb-4"></div>
-        <div className="text-[#1D3557] text-xl font-bold animate-pulse">
-          Loading Product...
-        </div>
+        <div className="text-[#1D3557] text-xl font-bold animate-pulse">Loading Product...</div>
         <button
           className="mt-6 text-[#457b9d] font-bold hover:underline"
           onClick={() => navigate('/shop')}
@@ -68,16 +66,10 @@ function ProductDetails() {
         <div className={productStyles.blurEffect}></div>
 
         <div className={productStyles.navWrapper}>
-          <button
-            onClick={() => navigate('/shop')}
-            className={productStyles.navBtn}
-          >
+          <button onClick={() => navigate('/shop')} className={productStyles.navBtn}>
             <span>←</span> Back to Shop
           </button>
-          <button
-            onClick={() => navigate('/home')}
-            className={productStyles.navBtn}
-          >
+          <button onClick={() => navigate('/home')} className={productStyles.navBtn}>
             Back to Home <span>→</span>
           </button>
         </div>
@@ -97,9 +89,7 @@ function ProductDetails() {
           {/* CONTENT SIDE */}
           <div className="space-y-8">
             <div>
-              <span className={productStyles.badge}>
-                {product.category || 'Electronics'}
-              </span>
+              <span className={productStyles.badge}>{product.category || 'Electronics'}</span>
               <h1 className={productStyles.title}>{product.name}</h1>
             </div>
 
@@ -159,23 +149,19 @@ function ProductDetails() {
               </h3>
               <ul className={productStyles.specsList}>
                 <li className={productStyles.specsItem}>
-                  <span className={productStyles.bullet}></span> Processor:
-                  Intel i7
+                  <span className={productStyles.bullet}></span> Processor: Intel i7
                 </li>
                 <li className={productStyles.specsItem}>
                   <span className={productStyles.bullet}></span> RAM: 16GB
                 </li>
                 <li className={productStyles.specsItem}>
-                  <span className={productStyles.bullet}></span> Storage: 512GB
-                  SSD
+                  <span className={productStyles.bullet}></span> Storage: 512GB SSD
                 </li>
                 <li className={productStyles.specsItem}>
-                  <span className={productStyles.bullet}></span> Display: 13.6″
-                  Retina
+                  <span className={productStyles.bullet}></span> Display: 13.6″ Retina
                 </li>
                 <li className={productStyles.specsItem}>
-                  <span className={productStyles.bullet}></span> Battery: Up to
-                  18 hours
+                  <span className={productStyles.bullet}></span> Battery: Up to 18 hours
                 </li>
               </ul>
             </div>

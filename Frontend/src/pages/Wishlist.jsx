@@ -24,16 +24,13 @@ function Wishlist() {
         {/* Wishlist Grid or Empty State */}
         <div className={wishlistStyles.grid}>
           {wishlist.length > 0 ? (
-            wishlist.map((item) => (
-              <Cards key={item._id || item.id} product={item.product} />
-            ))
+            wishlist.map((item) => <Cards key={item._id || item.id} product={item.product} />)
           ) : (
             <div className={wishlistStyles.emptyWrapper}>
               <h1 className={wishlistStyles.emptyTitle}>No Wishlist Items</h1>
 
               <p className={wishlistStyles.emptyText}>
-                You haven’t saved any products yet. Start adding your favorite
-                devices!
+                You haven’t saved any products yet. Start adding your favorite devices!
               </p>
 
               <Link to="/shop" className={wishlistStyles.browseBtn}>

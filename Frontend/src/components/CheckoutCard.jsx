@@ -20,18 +20,12 @@ function CheckoutCard() {
 
                 <div className={checkoutStyles.contentArea}>
                   <h2 className={checkoutStyles.title}>{item.product.name}</h2>
-                  <p className={checkoutStyles.description}>
-                    {item.product.smallDes}
-                  </p>
+                  <p className={checkoutStyles.description}>{item.product.smallDes}</p>
 
                   <div className={checkoutStyles.detailsRow}>
-                    <span className={checkoutStyles.priceText}>
-                      {item.product.price}
-                    </span>
+                    <span className={checkoutStyles.priceText}>{item.product.price}</span>
 
-                    <span className={checkoutStyles.qtyText}>
-                      Quantity: {item.quantity}
-                    </span>
+                    <span className={checkoutStyles.qtyText}>Quantity: {item.quantity}</span>
                     <span className={checkoutStyles.totalText}>
                       Total: {item.product.price * item.quantity}
                     </span>

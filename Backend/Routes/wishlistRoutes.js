@@ -6,12 +6,14 @@ import {
 } from '../controllers/wishlistController.js';
 
 import { protect } from '../middlewares/authMiddleware.js';
+import { validate } from '../middlewares/validateMiddleware.js';
+import { addToWishlistSchema } from '../validations/requestValidation.js';
 
 const router = express.Router();
 
 router.get('/', protect, getWishlist);
 
-router.post('/', protect, addToWishlist);
+router.post('/', protect, validate(addToWishlistSchema), addToWishlist);
 
 router.delete('/:id', protect, removeFromWishlist);
 

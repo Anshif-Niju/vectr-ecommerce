@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import { useForget } from '../hook/useForget';
+import { useResetPassword } from '../hook/useResetPassword';
 import { forgetStyles } from './Tailwind/Tailwind';
 
 function Forget() {
-  const { formData, handleChange, handleSubmit, error } = useForget();
+  const { formData, handleChange, handleSubmit, error } = useResetPassword();
 
   return (
     <div className={forgetStyles.container}>
@@ -14,9 +14,7 @@ function Forget() {
         {/* Header */}
         <div className="text-center mb-8">
           <h2 className={forgetStyles.headerTitle}>Reset Password</h2>
-          <p className={forgetStyles.headerSubtitle}>
-            Create a new secure password
-          </p>
+          <p className={forgetStyles.headerSubtitle}>Create a new secure password</p>
         </div>
 
         <form onSubmit={handleSubmit} className={forgetStyles.form}>

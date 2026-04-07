@@ -31,17 +31,8 @@ export default function Navbar() {
       <nav className={navStyles.nav}>
         <div className={navStyles.mainRow}>
           <div className={navStyles.logoWrapper}>
-            <NavLink
-              to="/home"
-              onClick={scrollTop}
-              className={navStyles.logoWrapper}
-            >
-              <img
-                src={vectrLogo}
-                alt="VECTR"
-                className={navStyles.logoImg}
-                loading="lazy"
-              />
+            <NavLink to="/home" onClick={scrollTop} className={navStyles.logoWrapper}>
+              <img src={vectrLogo} alt="VECTR" className={navStyles.logoImg} loading="lazy" />
               <span className={navStyles.logoText}></span>
             </NavLink>
           </div>
@@ -54,8 +45,7 @@ export default function Navbar() {
                   onClick={path === 'home' ? scrollTop : undefined}
                   className={navStyles.navLink}
                 >
-                  {path.charAt(0).toUpperCase() +
-                    path.slice(1).replace('orders', ' Orders')}
+                  {path.charAt(0).toUpperCase() + path.slice(1).replace('orders', ' Orders')}
                 </NavLink>
                 <span className={navStyles.navUnderline}></span>
               </li>
@@ -93,9 +83,7 @@ export default function Navbar() {
             </div>
 
             <div className={navStyles.profileArea}>
-              <p className={navStyles.userName}>
-                {displayName.split(' ')[0]}
-              </p>
+              <p className={navStyles.userName}>{displayName.split(' ')[0]}</p>
 
               {user?.img ? (
                 <img
@@ -120,20 +108,14 @@ export default function Navbar() {
                     <p className={navStyles.dropdownLabel}>Account</p>
                     <p className={navStyles.dropdownName}>{displayName}</p>
                   </div>
-                  <button
-                    className={navStyles.logoutBtn}
-                    onClick={handleLogout}
-                  >
+                  <button className={navStyles.logoutBtn} onClick={handleLogout}>
                     Logout
                   </button>
                 </div>
               )}
             </div>
 
-            <button
-              onClick={() => setOpen(!open)}
-              className={navStyles.mobileToggle}
-            >
+            <button onClick={() => setOpen(!open)} className={navStyles.mobileToggle}>
               {open ? '✕' : '☰'}
             </button>
           </div>
@@ -143,11 +125,7 @@ export default function Navbar() {
           <div className={navStyles.mobileMenu}>
             <ul className="flex flex-col gap-4 text-center">
               <li>
-                <NavLink
-                  to="/home"
-                  onClick={scrollTop}
-                  className={navStyles.mobileLink}
-                >
+                <NavLink to="/home" onClick={scrollTop} className={navStyles.mobileLink}>
                   Home
                 </NavLink>
               </li>
@@ -157,18 +135,12 @@ export default function Navbar() {
                 </NavLink>
               </li>
               <li>
-                <NavLink
-                  to="/wishlist"
-                  className={navStyles.mobileLinkSecondary}
-                >
+                <NavLink to="/wishlist" className={navStyles.mobileLinkSecondary}>
                   Wishlist
                 </NavLink>
               </li>
               <li>
-                <NavLink
-                  to="/support"
-                  className={navStyles.mobileLinkSecondary}
-                >
+                <NavLink to="/support" className={navStyles.mobileLinkSecondary}>
                   Support
                 </NavLink>
               </li>

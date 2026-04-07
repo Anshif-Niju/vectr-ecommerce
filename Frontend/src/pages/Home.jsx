@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getHomeProduct } from '../service/authService';
+import { getProducts } from '../service/productService';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Feedback from '../components/Feedback';
@@ -14,7 +14,7 @@ function Home() {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const res = await getHomeProduct('limit=6');
+      const res = await getProducts({ isActive: true, limit: 6 });
       setProduct(res);
     };
     fetchProducts();
@@ -46,14 +46,11 @@ function Home() {
             <div className={homeStyles.heroTextContent}>
               <h1 className={homeStyles.heroTitle}>
                 Dominate the Future of Gaming
-                <span className={homeStyles.heroTitleSpan}>
-                  Power. Performance. Precision.
-                </span>
+                <span className={homeStyles.heroTitleSpan}>Power. Performance. Precision.</span>
               </h1>
               <p className={homeStyles.heroDescription}>
-                Discover next-gen gaming laptops built for ultra FPS, RTX
-                graphics, and esports performance. Buy premium rigs or explore
-                powerful setups built for serious gamers.
+                Discover next-gen gaming laptops built for ultra FPS, RTX graphics, and esports
+                performance. Buy premium rigs or explore powerful setups built for serious gamers.
               </p>
 
               <div className={homeStyles.heroBtnWrapper}>
@@ -68,14 +65,7 @@ function Home() {
 
             <div className={homeStyles.heroVideoWrapper}>
               <div className={homeStyles.heroVideoBlur}></div>
-              <video
-                src={video}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className={homeStyles.heroVideo}
-              />
+              <video src={video} autoPlay loop muted playsInline className={homeStyles.heroVideo} />
             </div>
           </div>
         </section>
@@ -98,9 +88,7 @@ function Home() {
             <div className={homeStyles.splitOverlayLeft}></div>
             <div className={homeStyles.splitContent}>
               <h1 className={homeStyles.splitTitleLeft}>Buy Gear</h1>
-              <p className={homeStyles.splitDescLeft}>
-                Own the ultimate battlestation.
-              </p>
+              <p className={homeStyles.splitDescLeft}>Own the ultimate battlestation.</p>
               <Link to="/shop" className={homeStyles.splitBtn}>
                 Shop Now
               </Link>
@@ -134,17 +122,14 @@ function Home() {
         {/* FEATURES SECTION */}
         <section className={homeStyles.featuresSection}>
           <div className={homeStyles.featuresGrid}>
-            {[
-              'Buy New Devices',
-              'Explore Gaming',
-              'Fast Delivery',
-              'Secure Payments',
-            ].map((item) => (
-              <div key={item} className={homeStyles.featureItem}>
-                <div className={homeStyles.featureDot}></div>
-                <p className={homeStyles.featureText}>{item}</p>
-              </div>
-            ))}
+            {['Buy New Devices', 'Explore Gaming', 'Fast Delivery', 'Secure Payments'].map(
+              (item) => (
+                <div key={item} className={homeStyles.featureItem}>
+                  <div className={homeStyles.featureDot}></div>
+                  <p className={homeStyles.featureText}>{item}</p>
+                </div>
+              ),
+            )}
           </div>
         </section>
 

@@ -58,9 +58,7 @@ function Cart() {
 
               <div className={cartStyles.totalRow}>
                 <span>Total</span>
-                <span className={cartStyles.totalValue}>
-                  {totalPrice + delivery}
-                </span>
+                <span className={cartStyles.totalValue}>{totalPrice + delivery}</span>
               </div>
 
               <Link to="/checkOut" className={cartStyles.checkoutBtn}>

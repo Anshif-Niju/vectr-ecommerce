@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import userRoutes from './Routes/userRoutes.js';
 import productRoutes from './Routes/productRoutes.js';
 import cartRoutes from './Routes/cartRoutes.js';
@@ -10,12 +12,14 @@ import feedbackRoutes from './Routes/feedbackRoutes.js';
 import errorHandler from './middlewares/errorMiddleware.js';
 
 const app = express();
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(cors());
 
 app.use(express.json());
 app.use(cookieParser());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 console.log('app');
 app.use('/api/users', userRoutes);

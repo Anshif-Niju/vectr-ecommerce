@@ -13,9 +13,7 @@ function NotFound() {
 
       <div className={notFoundStyles.errorWrapper}>
         <div className={notFoundStyles.errorCode}>404</div>
-        <div className={notFoundStyles.iconOverlay}>
-          {/* Icon placeholder */}
-        </div>
+        <div className={notFoundStyles.iconOverlay}>{/* Icon placeholder */}</div>
       </div>
 
       <h2 className={notFoundStyles.title}>Oops! Page Not Found</h2>

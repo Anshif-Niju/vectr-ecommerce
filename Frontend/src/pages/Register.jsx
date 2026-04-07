@@ -14,9 +14,7 @@ function Register() {
       <div className={registerStyles.card}>
         <div className="text-center mb-8">
           <h2 className={registerStyles.headerTitle}>Create Account</h2>
-          <p className={registerStyles.headerSubtitle}>
-            Join the future of tech rental
-          </p>
+          <p className={registerStyles.headerSubtitle}>Join the future of tech rental</p>
         </div>
 
         <form onSubmit={handleSubmit} className={registerStyles.form}>
@@ -64,9 +62,7 @@ function Register() {
               </Link>
             </p>
 
-            {error && (
-              <span className={registerStyles.errorBadge}>{error}</span>
-            )}
+            {error && <span className={registerStyles.errorBadge}>{error}</span>}
           </div>
 
           <button type="submit" className={registerStyles.submitBtn}>

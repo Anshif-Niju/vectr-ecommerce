@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import api from '../service/api';
 import { useUser } from './UserContext';
+import { getAllOrders, updateOrderStatus as saveOrderStatus } from '../service/orderService';
+import { getProducts } from '../service/productService';
+import { getUsers, updateUser } from '../service/userService';
 
 const StatsContext = createContext();
 
@@ -25,21 +27,15 @@ export function StatsProvider({ children }) {
           return;
         }
 
-        const [userRes, productRes, ordersRes] = await Promise.all([
-          api.get('/users'),
-          api.get('/products'),
-          api.get('/orders'),
+        const [usersData, productData, ordersData] = await Promise.all([
+          getUsers(),
+          getProducts(),
+          getAllOrders(),
         ]);
-        const usersData = userRes.data;
-        const productData = productRes.data;
-        const ordersData = ordersRes.data;
 
         const filterUser = usersData.filter((user) => user.role !== 'admin');
 
-        const revenue = ordersData.reduce(
-          (total, order) => total + order.totalPrice,
-          0,
-        );
+        const revenue = ordersData.reduce((total, order) => total + order.totalPrice, 0);
 
         setStats({
           users: filterUser,
@@ -68,16 +64,12 @@ export function StatsProvider({ children }) {
 
       const newStatus = !userToUpdate.isActive;
 
-      await api.patch(`/users/${userID}`, {
-        isActive: newStatus,
-      });
+      await updateUser(userID, { isActive: newStatus });
 
       setStats((prevStats) => ({
         ...prevStats,
         users: prevStats.users.map((user) =>
-          (user._id || user.id) === userID
-            ? { ...user, isActive: newStatus }
-            : user,
+          (user._id || user.id) === userID ? { ...user, isActive: newStatus } : user,
         ),
       }));
     } catch (error) {
@@ -87,9 +79,7 @@ export function StatsProvider({ children }) {
 
   const updateOrderStatus = async (orderId, status) => {
     try {
-      const { data: updatedOrder } = await api.patch(`/orders/${orderId}/status`, {
-        status,
-      });
+      const updatedOrder = await saveOrderStatus(orderId, status);
 
       setStats((prevStats) => ({
         ...prevStats,
@@ -106,9 +96,7 @@ export function StatsProvider({ children }) {
   };
 
   return (
-    <StatsContext.Provider
-      value={{ stats, toggleActive, updateOrderStatus, setStats }}
-    >
+    <StatsContext.Provider value={{ stats, toggleActive, updateOrderStatus, setStats }}>
       {children}
     </StatsContext.Provider>
   );

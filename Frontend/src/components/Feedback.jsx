@@ -1,33 +1,24 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import api from '../service/api';
 import { feedbackStyles } from './Tailwind/tailwind';
+import { submitFeedback } from '../service/feedbackService';
 
 function Feedback() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
   const [message, setMessage] = useState('');
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
 
-    const emptyField = Object.values(formData).some(
-      (values) => values.trim() == '',
-    );
+    const emptyField = Object.values(formData).some((values) => values.trim() == '');
 
     if (emptyField) {
       toast.error('Please fill all fields');
@@ -39,12 +30,8 @@ function Feedback() {
       return;
     }
 
-    await api.post('/feedback', formData);
-    setFormData({
-      name: '',
-      email: '',
-      message: '',
-    });
+    await submitFeedback(formData);
+    setFormData({ name: '', email: '', message: '' });
     toast.success('Your Valuable Feedback Added,Thank you');
   };
 
@@ -55,14 +42,10 @@ function Feedback() {
 
         <h2 className={feedbackStyles.title}>We Value Your Feedback</h2>
 
-        <p className={feedbackStyles.subtitle}>
-          Help us improve Vectr Tech experience
-        </p>
+        <p className={feedbackStyles.subtitle}>Help us improve Vectr Tech experience</p>
 
         {message && (
-          <p className={feedbackStyles.statusMsg(message === 'Invalid email')}>
-            {message}
-          </p>
+          <p className={feedbackStyles.statusMsg(message === 'Invalid email')}>{message}</p>
         )}
 
         <form className={feedbackStyles.form} onSubmit={handleSubmit}>

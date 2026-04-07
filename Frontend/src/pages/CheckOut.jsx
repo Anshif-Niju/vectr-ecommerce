@@ -4,10 +4,9 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import CheckoutCard from '../components/CheckoutCard';
 import { useCart } from '../context/CartContext';
-import { useUser } from '../context/UserContext';
 import { toast } from 'react-hot-toast';
-import api from '../service/api';
 import { checkoutStyles } from './Tailwind/Tailwind';
+import { createOrder } from '../service/orderService';
 
 function Checkout() {
   const navigate = useNavigate();
@@ -22,16 +21,11 @@ function Checkout() {
   const { cart, totalPrice, clearCart } = useCart();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const placeOrder = async () => {
-    const emptyField = Object.values(formData).some(
-      (value) => value.trim() === '',
-    );
+    const emptyField = Object.values(formData).some((value) => value.trim() === '');
 
     if (emptyField) {
       toast.error('Fill all the fields');
@@ -46,10 +40,7 @@ function Checkout() {
       return;
     }
     try {
-      await api.post('/orders', {
-        address: formData,
-        paymentMethod: payment,
-      });
+      await createOrder({ address: formData, paymentMethod: payment });
 
       toast.success('Order Placed Successfully');
       clearCart();
@@ -139,12 +130,8 @@ function Checkout() {
                     className={checkoutStyles.paymentRadio}
                   />
                   <div>
-                    <p className={checkoutStyles.paymentMainText}>
-                      Cash on Delivery
-                    </p>
-                    <p className={checkoutStyles.paymentSubText}>
-                      Pay when product arrives
-                    </p>
+                    <p className={checkoutStyles.paymentMainText}>Cash on Delivery</p>
+                    <p className={checkoutStyles.paymentSubText}>Pay when product arrives</p>
                   </div>
                 </div>
                 <span className={checkoutStyles.paymentBadge}>COD</span>
@@ -160,12 +147,8 @@ function Checkout() {
                     className={checkoutStyles.paymentRadio}
                   />
                   <div>
-                    <p className={checkoutStyles.paymentMainText}>
-                      Credit / Debit Card
-                    </p>
-                    <p className={checkoutStyles.paymentSubText}>
-                      Visa, MasterCard, RuPay
-                    </p>
+                    <p className={checkoutStyles.paymentMainText}>Credit / Debit Card</p>
+                    <p className={checkoutStyles.paymentSubText}>Visa, MasterCard, RuPay</p>
                   </div>
                 </div>
                 <span className={checkoutStyles.paymentBadge}>CARD</span>
@@ -181,12 +164,8 @@ function Checkout() {
                     className={checkoutStyles.paymentRadio}
                   />
                   <div>
-                    <p className={checkoutStyles.paymentMainText}>
-                      UPI Payment
-                    </p>
-                    <p className={checkoutStyles.paymentSubText}>
-                      GPay, PhonePe, Paytm
-                    </p>
+                    <p className={checkoutStyles.paymentMainText}>UPI Payment</p>
+                    <p className={checkoutStyles.paymentSubText}>GPay, PhonePe, Paytm</p>
                   </div>
                 </div>
                 <span className={checkoutStyles.paymentBadge}>UPI</span>
@@ -201,10 +180,7 @@ function Checkout() {
               <p>Total</p>
               <p className={checkoutStyles.totalPrice}>{totalPrice}</p>
             </div>
-            <button
-              onClick={placeOrder}
-              className={checkoutStyles.placeOrderBtn}
-            >
+            <button onClick={placeOrder} className={checkoutStyles.placeOrderBtn}>
               Place Order
             </button>
           </div>

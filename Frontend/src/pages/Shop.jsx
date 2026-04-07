@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import api from '../service/api';
 import ProductCard from '../components/ShopCards';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { shopStyles } from './Tailwind/Tailwind';
+import { getProducts } from '../service/productService';
 
 function Shop() {
   const [product, setProduct] = useState([]);
@@ -13,29 +13,24 @@ function Shop() {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      let url = '/products?isActive=true';
-      if (selectCategory !== 'all') {
-        url = `/products?isActive=true&category=${selectCategory}`;
-      }
-      const res = await api.get(url);
-      setProduct(res.data);
-      setOriginalProduct(res.data);
+      const products = await getProducts({
+        isActive: true,
+        ...(selectCategory !== 'all' ? { category: selectCategory } : {}),
+      });
+      setProduct(products);
+      setOriginalProduct(products);
     };
 
     fetchProduct();
   }, [selectCategory]);
 
   const sortMinToMax = () => {
-    const sorted = [...product].sort(
-      (a, b) => Number(a.price) - Number(b.price),
-    );
+    const sorted = [...product].sort((a, b) => Number(a.price) - Number(b.price));
     setProduct(sorted);
   };
 
   const sortMaxToMin = () => {
-    const sorted = [...product].sort(
-      (a, b) => Number(b.price) - Number(a.price),
-    );
+    const sorted = [...product].sort((a, b) => Number(b.price) - Number(a.price));
     setProduct(sorted);
   };
 

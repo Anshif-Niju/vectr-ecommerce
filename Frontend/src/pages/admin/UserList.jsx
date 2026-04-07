@@ -2,88 +2,90 @@ import { useState } from 'react';
 import { useStats } from '../../context/StatsContext';
 import SideBar from './SideBar';
 import { UserCheck, UserMinus, Users, Search } from 'lucide-react';
+import { adminShellStyles, adminUserListStyles } from './Tailwind/AdminTailwind';
 
 function UserList() {
   const { stats, toggleActive } = useStats();
   const [search, setSearch] = useState('');
 
   const filteredUsers = stats.users.filter((user) =>
-    (user.username || user.name || '')
-      .toLowerCase()
-      .includes(search.toLowerCase())
+    (user.username || user.name || '').toLowerCase().includes(search.toLowerCase()),
   );
 
   const activeCount = stats.users.filter((u) => u.isActive).length;
   const blockedCount = stats.users.length - activeCount;
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-200 flex relative">
+    <div className={adminShellStyles.page}>
       <SideBar />
 
-      <main className="flex-1 p-6 md:p-8 w-full">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <main className={adminUserListStyles.main}>
+        <div className={adminUserListStyles.header}>
           <div>
-            <h1 className="text-3xl font-bold text-center text-white tracking-tight">User Management</h1>
+            <h1 className={adminUserListStyles.title}>User Management</h1>
           </div>
 
-          <div className="flex gap-4">
-            <div className="bg-slate-800/40 border border-slate-700/50 p-3 rounded-2xl flex items-center gap-3 backdrop-blur-sm">
-              <div className="p-2 bg-green-500/10 rounded-xl text-green-400"><UserCheck size={20}/></div>
-              <div><p className="text-[10px] uppercase text-slate-500 font-bold">Active</p><p className="text-lg font-bold text-white">{activeCount}</p></div>
+          <div className={adminUserListStyles.statsWrap}>
+            <div className={adminUserListStyles.statCard}>
+              <div className={adminUserListStyles.statIcon('active')}>
+                <UserCheck size={20} />
+              </div>
+              <div>
+                <p className={adminUserListStyles.statLabel}>Active</p>
+                <p className={adminUserListStyles.statValue}>{activeCount}</p>
+              </div>
             </div>
-            <div className="bg-slate-800/40 border border-slate-700/50 p-3 rounded-2xl flex items-center gap-3 backdrop-blur-sm">
-              <div className="p-2 bg-red-500/10 rounded-xl text-red-400"><UserMinus size={20}/></div>
-              <div><p className="text-[10px] uppercase text-slate-500 font-bold">Blocked</p><p className="text-lg font-bold text-white">{blockedCount}</p></div>
+            <div className={adminUserListStyles.statCard}>
+              <div className={adminUserListStyles.statIcon('blocked')}>
+                <UserMinus size={20} />
+              </div>
+              <div>
+                <p className={adminUserListStyles.statLabel}>Blocked</p>
+                <p className={adminUserListStyles.statValue}>{blockedCount}</p>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="relative mb-8 max-w-md">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+        <div className={adminUserListStyles.searchWrap}>
+          <Search className={adminUserListStyles.searchIcon} size={18} />
           <input
             type="text"
             placeholder="Find a user "
-            className="w-full bg-slate-800/50 border border-slate-700 rounded-2xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-cyan-500 outline-none transition-all placeholder:text-slate-600"
+            className={adminUserListStyles.searchInput}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className={adminUserListStyles.grid}>
           {filteredUsers.map((user) => (
-            <div
-              key={user._id || user.id}
-              className={`bg-slate-800/80 rounded-3xl border border-slate-700/50 p-6  transition-all group relative overflow-hidden ${!user.isActive ? 'opacity-80' : ''}`}
-            >
-              {user.isActive && (
-                <div className="absolute -top-10 -right-10 w-24 h-24 bg-cyan-500/5 blur-3xl rounded-full" />
-              )}
+            <div key={user._id || user.id} className={adminUserListStyles.card(user.isActive)}>
+              {user.isActive && <div className={adminUserListStyles.glow} />}
 
-              <div className="flex justify-between items-start mb-5">
-                <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-slate-700 to-slate-600 flex items-center justify-center text-xl font-bold text-cyan-400 shadow-inner">
+              <div className={adminUserListStyles.topRow}>
+                <div className={adminUserListStyles.avatar}>
                   {(user.username || user.name || 'U').charAt(0)}
                 </div>
-                <span className={`px-3 py-1 rounded-full  font-black uppercase text-sm  ${user.isActive ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
+                <span className={adminUserListStyles.statusBadge(user.isActive)}>
                   {user.isActive ? 'Active' : 'Blocked'}
                 </span>
               </div>
 
-              <h2 className="text-xl font-bold text-white truncate">
-                {user.username || user.name}
-              </h2>
+              <h2 className={adminUserListStyles.name}>{user.username || user.name}</h2>
 
-              <div className="space-y-4 py-4 border-t border-slate-700/50">
+              <div className={adminUserListStyles.infoSection}>
                 <div>
-                  <label className="text-[10px] uppercase text-slate-500 font-bold block mb-1">User ID:-</label>
-                  <p className="text-sm text-slate-300 truncate">{user._id || user.id}</p>
+                  <label className={adminUserListStyles.infoLabel}>User ID:-</label>
+                  <p className={adminUserListStyles.infoValue}>{user._id || user.id}</p>
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase text-slate-500 font-bold block mb-1">Email Address</label>
-                  <p className="text-sm text-slate-300 truncate">{user.email}</p>
+                  <label className={adminUserListStyles.infoLabel}>Email Address</label>
+                  <p className={adminUserListStyles.infoValue}>{user.email}</p>
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase text-slate-500 font-bold block mb-1">Last Seen</label>
-                  <p className="text-sm text-slate-300">
+                  <label className={adminUserListStyles.infoLabel}>Last Seen</label>
+                  <p className={adminUserListStyles.infoDate}>
                     {user.accountCreatedDate
                       ? new Date(user.accountCreatedDate).toLocaleDateString()
                       : 'N/A'}
@@ -91,14 +93,10 @@ function UserList() {
                 </div>
               </div>
 
-              <div className="mt-6 flex gap-2">
+              <div className={adminUserListStyles.actionRow}>
                 <button
                   onClick={() => toggleActive(user._id || user.id)}
-                  className={`flex-1 py-3 rounded-2xl text-xs font-bold transition-all ${
-                    user.isActive
-                    ? 'bg-slate-700 text-slate-300 hover:bg-red-500 hover:text-white'
-                    : 'bg-cyan-500 text-white hover:bg-cyan-600 shadow-lg shadow-cyan-500/20'
-                  }`}
+                  className={adminUserListStyles.actionButton(user.isActive)}
                 >
                   {user.isActive ? 'Block Account' : 'Unblock Account'}
                 </button>
@@ -109,10 +107,12 @@ function UserList() {
 
         {/* Empty State */}
         {filteredUsers.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-24 bg-slate-800/20 rounded-3xl border-2 border-dashed border-slate-800">
-            <Users size={60} className="text-slate-700 mb-4" />
-            <h3 className="text-xl font-bold text-slate-400">No matches found</h3>
-            <p className="text-slate-500 text-sm">We couldn't find any users named "{search}"</p>
+          <div className={adminUserListStyles.emptyState}>
+            <Users size={60} className={adminUserListStyles.emptyIcon} />
+            <h3 className={adminUserListStyles.emptyTitle}>No matches found</h3>
+            <p className={adminUserListStyles.emptyText}>
+              We couldn't find any users named "{search}"
+            </p>
           </div>
         )}
       </main>

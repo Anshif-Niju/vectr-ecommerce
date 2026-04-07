@@ -2,10 +2,6 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
 export const protect = async (req, res, next) => {
-  console.log('protect');
-
-  console.log('Cookies:', req.cookies);
-  console.log('Auth Header:', req.headers.authorization);
   try {
     let token;
 
@@ -16,10 +12,8 @@ export const protect = async (req, res, next) => {
     }
 
     if (!token) {
-      return res.status(401).json({ message: 'No tokens' });
+      return res.status(401).json({ message: 'Authentication token missing' });
     }
-
-    console.log('Token:', token);
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -32,8 +26,7 @@ export const protect = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    console.error('protect auth error', error);
-    res.status(401).json({ message: 'Invalid tokens' });
+    res.status(401).json({ message: 'Invalid token' });
   }
 };
 

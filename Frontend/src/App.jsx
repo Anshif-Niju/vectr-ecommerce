@@ -17,38 +17,31 @@ import Orders from './pages/admin/Orders';
 import Products from './pages/admin/Products';
 import ScrollTop from './components/ScrollTop';
 import { Toaster } from 'react-hot-toast';
-import { useUser } from './context/UserContext';
+import { AdminRoute, GuestRoute, ProtectedRoute } from './routes/RouteGuards';
 
-const ProtectedRoutes = () => {
-  const { user } = useUser();
+function AdminSection() {
+  return (
+    <AdminRoute>
+      <Outlet />
+    </AdminRoute>
+  );
+}
 
-  if (!user) return <Navigate to="/login" />;
-  if (user.role !== 'admin') return <Navigate to="/home" />;
+function GuestSection() {
+  return (
+    <GuestRoute>
+      <Outlet />
+    </GuestRoute>
+  );
+}
 
-  return <Outlet />;
-};
-
-const PublicRoutes = () => {
-  const { user } = useUser();
-
-  if (user) {
-    if (user.role === 'admin') {
-      return <Navigate to="/admin/dashboard" replace />;
-    }
-    return <Navigate to="/home" replace />;
-  }
-
-  return <Outlet />;
-};
-
-const PrivateRoutes = () => {
-  const { user } = useUser();
-
-  if (!user) return <Navigate to="/login" />;
-  if (user.role === 'admin') return <Navigate to="/admin/dashboard" />;
-
-  return <Outlet />;
-};
+function UserSection() {
+  return (
+    <ProtectedRoute>
+      <Outlet />
+    </ProtectedRoute>
+  );
+}
 
 function App() {
   return (
@@ -57,22 +50,22 @@ function App() {
       <Toaster position="top-center" reverseOrder={false}></Toaster>
 
       <Routes>
-        <Route element={<ProtectedRoutes />}>
-          <Route path="/admin/dashboard" element={<Dashboard />} />
-          <Route path="/admin/userlist" element={<UserList />} />
-          <Route path="/admin/orders" element={<Orders />} />
-          <Route path="/admin/products" element={<Products />} />
+        <Route path="/admin" element={<AdminSection />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="userlist" element={<UserList />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="products" element={<Products />} />
         </Route>
 
-        <Route element={<PublicRoutes />}>
+        <Route element={<GuestSection />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forget" element={<Forget />} />
           <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
         </Route>
 
-        <Route element={<PrivateRoutes />}>
+        <Route element={<UserSection />}>
           <Route path="/home" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/itemDetail/:id" element={<ProductDetails />} />

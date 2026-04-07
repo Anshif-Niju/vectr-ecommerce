@@ -1,24 +1,19 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../service/api';
 import { toast } from 'react-hot-toast';
 import { useUser } from '../context/UserContext';
+import { clearAuthToken, loginUser } from '../service/sessionService';
 
-export const useLogin = () => {
+export const useLogin = (options = {}) => {
+  const { adminOnly = false, successMessage = 'Login successful' } = options;
   const navigate = useNavigate();
   const { setUser } = useUser();
 
-  const [formData, setFormData] = useState({
-    email: '',
-    pass: '',
-  });
+  const [formData, setFormData] = useState({ email: '', pass: '' });
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -33,34 +28,28 @@ export const useLogin = () => {
     }
 
     try {
-      const res = await api.post('/users/login', {
-        email: formData.email,
-        password: formData.pass,
-      });
+      const { user } = await loginUser({ email: formData.email, password: formData.pass });
 
-      const tokenFromServer = res.data.jwt_token || '';
-      const normalizedToken = tokenFromServer.replace(/^Bearer\s+/i, '').trim();
-      localStorage.setItem('token', normalizedToken);
+      if (adminOnly && user.role !== 'admin') {
+        clearAuthToken();
+        setUser(null);
+        throw new Error('Access denied. Admin only.');
+      }
 
-      const userRes = await api.get('/users/me', {
-        headers: {
-          Authorization: `Bearer ${normalizedToken}`,
-        },
-      });
+      setUser(user);
 
-      setUser(userRes.data);
-      sessionStorage.setItem('user', JSON.stringify(userRes.data));
+      toast.success(successMessage);
 
-      toast.success('Login successful');
-
-      if (userRes.data.role === 'admin') {
+      if (user.role === 'admin') {
         navigate('/admin/dashboard');
       } else {
         navigate('/home');
       }
     } catch (error) {
-      localStorage.removeItem('token');
-      toast.error(error.response?.data?.message || 'Login failed');
+      clearAuthToken();
+      const errorMessage = error.response?.data?.message || error.message || 'Login failed';
+      setError(errorMessage);
+      toast.error(errorMessage);
     }
   };
 
