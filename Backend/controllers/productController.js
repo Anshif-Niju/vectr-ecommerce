@@ -1,6 +1,7 @@
 import Product from '../models/Products.js';
+import { uploadProductImageToCloudinary } from '../config/cloudinary.js';
 
-const normalizeProductPayload = (req) => {
+const normalizeProductPayload = async (req) => {
   const payload = { ...req.body };
 
   if (payload.price !== undefined && payload.price !== '') {
@@ -16,7 +17,8 @@ const normalizeProductPayload = (req) => {
   }
 
   if (req.file) {
-    payload.img = `${req.protocol}://${req.get('host')}/uploads/products/${req.file.filename}`;
+    const uploadedImage = await uploadProductImageToCloudinary(req.file);
+    payload.img = uploadedImage.secure_url;
   }
 
   return payload;
@@ -65,7 +67,7 @@ export const getSingleProduct = async (req, res, next) => {
 
 export const updateProduct = async (req, res, next) => {
   try {
-    const payload = normalizeProductPayload(req);
+    const payload = await normalizeProductPayload(req);
     const product = await Product.findByIdAndUpdate(req.params.id, payload, { new: true });
 
     if (!product) {
@@ -80,7 +82,7 @@ export const updateProduct = async (req, res, next) => {
 
 export const createProduct = async (req, res, next) => {
   try {
-    const payload = normalizeProductPayload(req);
+    const payload = await normalizeProductPayload(req);
 
     if (!payload.img) {
       res.status(400);
