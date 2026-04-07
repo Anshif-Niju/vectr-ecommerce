@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import { addToCart, clearCartItems, getCart, removeFromCart } from '../service/cartService';
 
 const CartContext = createContext();
+const getApiErrorMessage = (error, fallback) => error.response?.data?.message || fallback;
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
@@ -41,10 +42,10 @@ export const CartProvider = ({ children }) => {
       const updatedCart = await addToCart({ productId: product._id || product.id, quantity: qty });
 
       setCart(updatedCart);
-      toast.success('Added to cart');
+      toast.success(qty > 0 ? 'Added to cart' : 'Cart updated');
     } catch (error) {
       console.log(error);
-      toast.error('Failed to add');
+      toast.error(getApiErrorMessage(error, 'Failed to update cart'));
     }
   };
 
@@ -57,6 +58,7 @@ export const CartProvider = ({ children }) => {
       toast.success('Item removed');
     } catch (error) {
       console.log(error);
+      toast.error(getApiErrorMessage(error, 'Failed to remove item'));
     }
   };
 
@@ -68,8 +70,12 @@ export const CartProvider = ({ children }) => {
 
       toast.success('Cart cleared');
     } catch (error) {
-      toast.error('Error clearing cart');
+      toast.error(getApiErrorMessage(error, 'Error clearing cart'));
     }
+  };
+
+  const resetCart = () => {
+    setCart([]);
   };
 
   // ✅ CART COUNT
@@ -90,7 +96,16 @@ export const CartProvider = ({ children }) => {
 
   return (
     <CartContext.Provider
-      value={{ cart, cartLength, totalPrice, delivery, addProduct, removeCart, clearCart }}
+      value={{
+        cart,
+        cartLength,
+        totalPrice,
+        delivery,
+        addProduct,
+        removeCart,
+        clearCart,
+        resetCart,
+      }}
     >
       {children}
     </CartContext.Provider>

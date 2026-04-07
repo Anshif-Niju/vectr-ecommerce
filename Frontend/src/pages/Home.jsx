@@ -11,6 +11,7 @@ import { homeStyles } from './Tailwind/Tailwind';
 function Home() {
   const [product, setProduct] = useState([]);
   const [hoveredSide, setHoveredSide] = useState(null);
+  const [showVideo, setShowVideo] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -18,6 +19,22 @@ function Home() {
       setProduct(res);
     };
     fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const idleId = window.requestIdleCallback(() => setShowVideo(true), { timeout: 1200 });
+
+      return () => {
+        window.cancelIdleCallback(idleId);
+      };
+    }
+
+    const timeoutId = window.setTimeout(() => setShowVideo(true), 500);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, []);
 
   const getLeftWidth = () => {
@@ -65,7 +82,19 @@ function Home() {
 
             <div className={homeStyles.heroVideoWrapper}>
               <div className={homeStyles.heroVideoBlur}></div>
-              <video src={video} autoPlay loop muted playsInline className={homeStyles.heroVideo} />
+              {showVideo ? (
+                <video
+                  src={video}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  className={homeStyles.heroVideo}
+                />
+              ) : (
+                <div className={homeStyles.heroVideoPlaceholder}></div>
+              )}
             </div>
           </div>
         </section>

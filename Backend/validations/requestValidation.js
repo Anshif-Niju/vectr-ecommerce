@@ -4,7 +4,7 @@ const objectId = Joi.string().trim().hex().length(24);
 
 export const addToCartSchema = Joi.object({
   productId: objectId.required(),
-  quantity: Joi.number().integer().min(1).default(1),
+  quantity: Joi.number().integer().invalid(0).default(1),
 });
 
 export const addToWishlistSchema = Joi.object({

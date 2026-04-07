@@ -18,13 +18,18 @@ function Checkout() {
     address: '',
   });
   const [payment, setPayment] = useState(null);
-  const { cart, totalPrice, clearCart } = useCart();
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const { cart, totalPrice, resetCart } = useCart();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const placeOrder = async () => {
+    if (isPlacingOrder) {
+      return;
+    }
+
     const emptyField = Object.values(formData).some((value) => value.trim() === '');
 
     if (emptyField) {
@@ -40,14 +45,17 @@ function Checkout() {
       return;
     }
     try {
+      setIsPlacingOrder(true);
       await createOrder({ address: formData, paymentMethod: payment });
 
+      resetCart();
       toast.success('Order Placed Successfully');
-      clearCart();
       navigate('/myorders');
     } catch (error) {
       console.log(error);
-      toast.error('Failed to place order');
+      toast.error(error.response?.data?.message || 'Failed to place order');
+    } finally {
+      setIsPlacingOrder(false);
     }
   };
 
@@ -180,8 +188,12 @@ function Checkout() {
               <p>Total</p>
               <p className={checkoutStyles.totalPrice}>{totalPrice}</p>
             </div>
-            <button onClick={placeOrder} className={checkoutStyles.placeOrderBtn}>
-              Place Order
+            <button
+              onClick={placeOrder}
+              className={checkoutStyles.placeOrderBtn}
+              disabled={isPlacingOrder}
+            >
+              {isPlacingOrder ? 'Placing Order...' : 'Place Order'}
             </button>
           </div>
         </div>

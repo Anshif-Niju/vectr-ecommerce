@@ -1,23 +1,25 @@
+import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Home from './pages/Home';
-import Forget from './pages/Forget';
-import NotFound from './pages/NotFound';
-import Shop from './pages/Shop';
-import ProductDetails from './pages/ProductDetails';
-import Cart from './pages/Cart';
-import Wishlist from './pages/Wishlist';
-import CheckOut from './pages/CheckOut';
-import MyOrders from './pages/MyOrders';
-import AdminLogin from './pages/admin/AdminLogin';
-import Dashboard from './pages/admin/Dashboard';
-import UserList from './pages/admin/UserList';
-import Orders from './pages/admin/Orders';
-import Products from './pages/admin/Products';
 import ScrollTop from './components/ScrollTop';
 import { Toaster } from 'react-hot-toast';
-import { AdminRoute, GuestRoute, ProtectedRoute } from './routes/RouteGuards';
+import { AdminRoute, GuestRoute, ProtectedRoute, RouteLoading } from './routes/RouteGuards';
+
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const Home = lazy(() => import('./pages/Home'));
+const Forget = lazy(() => import('./pages/Forget'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+const Shop = lazy(() => import('./pages/Shop'));
+const ProductDetails = lazy(() => import('./pages/ProductDetails'));
+const Cart = lazy(() => import('./pages/Cart'));
+const Wishlist = lazy(() => import('./pages/Wishlist'));
+const CheckOut = lazy(() => import('./pages/CheckOut'));
+const MyOrders = lazy(() => import('./pages/MyOrders'));
+const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const UserList = lazy(() => import('./pages/admin/UserList'));
+const Orders = lazy(() => import('./pages/admin/Orders'));
+const Products = lazy(() => import('./pages/admin/Products'));
 
 function AdminSection() {
   return (
@@ -49,34 +51,36 @@ function App() {
       <ScrollTop />
       <Toaster position="top-center" reverseOrder={false}></Toaster>
 
-      <Routes>
-        <Route path="/admin" element={<AdminSection />}>
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="userlist" element={<UserList />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="products" element={<Products />} />
-        </Route>
+      <Suspense fallback={<RouteLoading />}>
+        <Routes>
+          <Route path="/admin" element={<AdminSection />}>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="userlist" element={<UserList />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="products" element={<Products />} />
+          </Route>
 
-        <Route element={<GuestSection />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forget" element={<Forget />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/" element={<Navigate to="/login" replace />} />
-        </Route>
+          <Route element={<GuestSection />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forget" element={<Forget />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/" element={<Navigate to="/login" replace />} />
+          </Route>
 
-        <Route element={<UserSection />}>
-          <Route path="/home" element={<Home />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/itemDetail/:id" element={<ProductDetails />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/checkOut" element={<CheckOut />} />
-          <Route path="/myorders" element={<MyOrders />} />
-        </Route>
+          <Route element={<UserSection />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/itemDetail/:id" element={<ProductDetails />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/checkOut" element={<CheckOut />} />
+            <Route path="/myorders" element={<MyOrders />} />
+          </Route>
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </>
   );
 }

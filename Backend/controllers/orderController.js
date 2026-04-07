@@ -12,6 +12,14 @@ export const createOrder = async (req, res, next) => {
       return res.status(400).json({ message: 'Cart is empty' });
     }
 
+    const unavailableItems = cartItems.filter((item) => !item.productId);
+
+    if (unavailableItems.length > 0) {
+      return res.status(400).json({
+        message: 'One or more cart products are no longer available. Remove them and try again.',
+      });
+    }
+
     const totalPrice = cartItems.reduce((total, item) => {
       return total + item.productId.price * item.quantity;
     }, 0);
@@ -31,7 +39,9 @@ export const createOrder = async (req, res, next) => {
 
     await Cart.deleteMany({ userId: req.user._id });
 
-    res.status(201).json(order);
+    const populatedOrder = await Order.findById(order._id).populate('products.productId');
+
+    res.status(201).json(populatedOrder);
   } catch (error) {
     next(error);
   }

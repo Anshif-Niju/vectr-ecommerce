@@ -5,7 +5,8 @@ import jwt from 'jsonwebtoken';
 export const register = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
-    const normalizedEmail = email.toLowerCase();
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedUsername = username.trim();
 
     const exist = await User.findOne({ email: normalizedEmail });
     if (exist) {
@@ -14,10 +15,14 @@ export const register = async (req, res, next) => {
 
     const hashed = await bcrypt.hash(password, 10);
 
-    await User.create({ username, email: normalizedEmail, password: hashed });
+    await User.create({ username: normalizedUsername, email: normalizedEmail, password: hashed });
 
     res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
+    if (error?.code === 11000) {
+      return res.status(409).json({ message: 'User already exists' });
+    }
+
     next(error);
   }
 };

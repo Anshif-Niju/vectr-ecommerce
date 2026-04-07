@@ -19,6 +19,8 @@ export const homeStyles = {
     'absolute inset-0 bg-[#457b9d] blur-[60px] opacity-20 rounded-full group-hover:opacity-30 transition-opacity duration-500',
   heroVideo:
     'relative rounded-[2.5rem] shadow-2xl rotate-1 hover:rotate-0 transition-all duration-700 ease-out animate-float border-4 border-white w-full h-full object-cover',
+  heroVideoPlaceholder:
+    'relative min-h-[320px] rounded-[2.5rem] border-4 border-white bg-gradient-to-br from-[#0f172a] via-[#1D3557] to-[#457b9d] shadow-2xl',
 
   splitSection: 'relative w-full h-[600px] md:h-[700px] flex flex-col md:flex-row bg-[#0f172a]',
   splitLeft:

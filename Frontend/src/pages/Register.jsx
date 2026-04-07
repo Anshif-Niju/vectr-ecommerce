@@ -3,7 +3,7 @@ import { useRegister } from '../hook/useRegister';
 import { registerStyles } from './Tailwind/Tailwind';
 
 function Register() {
-  const { formData, handleChange, handleSubmit, error } = useRegister();
+  const { formData, handleChange, handleSubmit, error, isSubmitting } = useRegister();
 
   return (
     <div className={registerStyles.container}>
@@ -65,8 +65,8 @@ function Register() {
             {error && <span className={registerStyles.errorBadge}>{error}</span>}
           </div>
 
-          <button type="submit" className={registerStyles.submitBtn}>
-            Register
+          <button type="submit" className={registerStyles.submitBtn} disabled={isSubmitting}>
+            {isSubmitting ? 'Registering...' : 'Register'}
           </button>
         </form>
       </div>

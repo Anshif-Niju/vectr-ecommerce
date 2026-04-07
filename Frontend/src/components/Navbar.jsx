@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { FaRegHeart } from 'react-icons/fa';
 import { NavLink, useNavigate } from 'react-router-dom';
-import vectrLogo from '../assets/img/Vectr.png';
 import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -32,8 +31,10 @@ export default function Navbar() {
         <div className={navStyles.mainRow}>
           <div className={navStyles.logoWrapper}>
             <NavLink to="/home" onClick={scrollTop} className={navStyles.logoWrapper}>
-              <img src={vectrLogo} alt="VECTR" className={navStyles.logoImg} loading="lazy" />
-              <span className={navStyles.logoText}></span>
+              <div className={navStyles.logoBadge} aria-hidden="true">
+                V
+              </div>
+              <span className={navStyles.logoText}>VECTR</span>
             </NavLink>
           </div>
 
