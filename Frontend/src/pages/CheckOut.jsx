@@ -8,6 +8,8 @@ import { toast } from 'react-hot-toast';
 import { checkoutStyles } from './Tailwind/Tailwind';
 import { createOrder } from '../service/orderService';
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function Checkout() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -30,10 +32,38 @@ function Checkout() {
       return;
     }
 
-    const emptyField = Object.values(formData).some((value) => value.trim() === '');
+    const trimmedFormData = {
+      name: formData.name.trim(),
+      email: formData.email.trim().toLowerCase(),
+      number: formData.number.replace(/\D/g, ''),
+      city: formData.city.trim(),
+      address: formData.address.trim(),
+    };
+
+    const emptyField = Object.values(trimmedFormData).some((value) => value === '');
 
     if (emptyField) {
       toast.error('Fill all the fields');
+      return;
+    }
+    if (trimmedFormData.name.length < 2) {
+      toast.error('Enter your full name');
+      return;
+    }
+    if (!emailRegex.test(trimmedFormData.email)) {
+      toast.error('Enter a valid email address');
+      return;
+    }
+    if (trimmedFormData.number.length < 10 || trimmedFormData.number.length > 15) {
+      toast.error('Phone number must be 10 to 15 digits');
+      return;
+    }
+    if (trimmedFormData.city.length < 2) {
+      toast.error('Enter your city name');
+      return;
+    }
+    if (trimmedFormData.address.length < 10) {
+      toast.error('Please enter your full address with at least 10 characters');
       return;
     }
     if (payment == null) {
@@ -46,7 +76,7 @@ function Checkout() {
     }
     try {
       setIsPlacingOrder(true);
-      await createOrder({ address: formData, paymentMethod: payment });
+      await createOrder({ address: trimmedFormData, paymentMethod: payment });
 
       resetCart();
       toast.success('Order Placed Successfully');

@@ -115,6 +115,7 @@ export const navStyles = {
   
   // Logo Section
   logoWrapper: "flex items-center gap-2",
+  logoImg: "h-[60px] w-auto object-contain",
   logoBadge: "h-12 w-12 rounded-2xl bg-gradient-to-br from-[#457b9d] to-[#1D3557] flex items-center justify-center text-white font-black text-lg shadow-lg shadow-blue-900/20",
   logoText: "text-xl font-black tracking-[0.24em] text-[#1D3557]",
   

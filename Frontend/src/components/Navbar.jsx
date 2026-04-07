@@ -31,10 +31,12 @@ export default function Navbar() {
         <div className={navStyles.mainRow}>
           <div className={navStyles.logoWrapper}>
             <NavLink to="/home" onClick={scrollTop} className={navStyles.logoWrapper}>
-              <div className={navStyles.logoBadge} aria-hidden="true">
-                V
-              </div>
-              <span className={navStyles.logoText}>VECTR</span>
+              <img
+                src="https://res.cloudinary.com/dknyois2e/image/upload/v1775556262/btjystdpsdjjfgzczpsj.png"
+                alt="VECTR"
+                className={navStyles.logoImg}
+                loading="lazy"
+              />
             </NavLink>
           </div>
 
@@ -95,10 +97,7 @@ export default function Navbar() {
                   className={navStyles.userImg}
                 />
               ) : (
-                <div
-                  onClick={() => setprofileOpen(!profileOpen)}
-                  className={navStyles.userPlaceholder}
-                >
+                <div onClick={() => setprofileOpen(!profileOpen)} className={navStyles.userPlaceholder}>
                   {displayName.slice(0, 2).toUpperCase() || 'G'}
                 </div>
               )}
