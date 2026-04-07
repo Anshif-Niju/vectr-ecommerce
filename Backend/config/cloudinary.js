@@ -57,7 +57,7 @@ export const uploadProductImageToCloudinary = (file) => {
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
-        folder: folder || 'vectr/products',
+        folder: folder || 'Vectr-Ecommerce/products',
         public_id: buildPublicId(file.originalname),
         resource_type: 'image',
       },
