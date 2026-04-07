@@ -62,10 +62,6 @@ function Checkout() {
       toast.error('Enter your city name');
       return;
     }
-    if (trimmedFormData.address.length < 10) {
-      toast.error('Please enter your full address with at least 10 characters');
-      return;
-    }
     if (payment == null) {
       toast.error('Select payment Option');
       return;

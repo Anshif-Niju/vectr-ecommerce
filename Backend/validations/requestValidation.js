@@ -35,9 +35,8 @@ const orderAddressSchema = Joi.object({
     'string.empty': 'Please enter your city',
     'string.min': 'City must be at least 2 characters long',
   }),
-  address: Joi.string().trim().min(10).max(200).required().messages({
+  address: Joi.string().trim().max(200).required().messages({
     'string.empty': 'Please enter your full address',
-    'string.min': 'Please enter your full address with at least 10 characters',
     'string.max': 'Address cannot be more than 200 characters long',
   }),
 });
