@@ -16,7 +16,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(
-  cors({ origin: 'https://vectr-ecommerce.vercel.app', methods: ['GET', 'POST', 'PUT', 'DELETE'], credentials: true }),
+  cors({
+    origin: ['http://54.92.163.133:5173', 'http://localhost:5173'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  }),
 );
 
 app.use(express.json());
